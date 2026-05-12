@@ -1,0 +1,4971 @@
+/* =====================================================
+   ALPENGLOW v0.10 — STYLE.CSS  (v11 — glass shell rebuild)
+   Architecture is now a 4-layer material stack:
+
+     body (alpine photo, fixed)
+      └─ main.page              (full-viewport stage, transparent)
+          └─ div.glass-shell    (absolute-positioned frosted frame)
+              ├─ div.glass-topbar    (translucent header, sticky-feeling)
+              ├─ section.content-stack  (white inner page, scrolls)
+              └─ nav.bottom-nav      (frosted nav, anchored to shell base)
+
+   This replaces the previous "white column + fixed nav" model.
+   Tokens, components, pills, cards, buttons, etc. are unchanged.
+   ===================================================== */
+
+
+/* =====================================================
+   1. DESIGN TOKENS
+   ===================================================== */
+
+:root {
+  /* Neutrals (cool, alpine) */
+  --snow:  #F7F8FA;
+  --frost: #EEF1F4;
+  --mist:  #D9E0E6;
+  --fog:   #A9B5C2;
+  --storm: #7F94A8;
+  --ink:   #1F2329;
+  --ash:   #2B3138;
+
+  /* Amber accent — the only action color */
+  --amber-light: #FFC24A;
+  --amber:       #FFB020;
+  --amber-dark:  #F38A2E;
+  --ember:       #D96A1D;
+  --grad-amber:  linear-gradient(135deg, #FFC24A, #F38A2E);
+
+  /* Status (used sparingly: legend dots, state pills) */
+  --good: #16A34A;
+  --good-soft: rgba(34,197,94,0.14);
+  --warn: var(--amber-dark);
+  --bad:  #DC2626;
+  --bad-soft: rgba(239,68,68,0.12);
+
+  /* Surfaces */
+  --page:  #F7F8FA;
+  --card:  #FFFFFF;
+  --line:  rgba(31,35,41,0.08);
+  --line-soft: rgba(31,35,41,0.05);
+
+  /* Glass material — light frost over alpine bg */
+  --glass-light:    rgba(247,248,250,0.62);
+  --glass-frost:    rgba(220,232,244,0.42);
+  --glass-frost-strong: rgba(220,232,244,0.58);
+  --glass-tint-top: rgba(255,255,255,0.20);
+  --glass-rim:      rgba(255,255,255,0.78);
+  --glass-blur:     blur(22px) saturate(150%);
+  --shell-blur:     blur(28px) saturate(160%);
+
+  /* Dark Liquid Glass material for parent surfaces */
+  --liquid-glass-bg: rgba(255,255,255,0.12);
+  --liquid-glass-bg-strong: rgba(248,250,252,0.30);
+  --liquid-glass-border: rgba(255,255,255,0.46);
+  --liquid-glass-border-soft: rgba(255,255,255,0.12);
+  --liquid-glass-blur: 320px;
+  --liquid-glass-saturation: 100%;
+  --liquid-glass-radius: 24px;
+  --liquid-glass-shadow: 0 12px 34px rgba(0,0,0,0.10);
+  --liquid-glass-inner-highlight: inset 0 1px 0 rgba(255,255,255,0.44);
+  --app-bg-image: url("./assets/dark-liquid-bg.jpg");
+
+  /* Shell-specific glass (cool white over alpine photo) */
+  --shell-fill:     rgba(245,249,253,0.18);
+  --shell-rim:      rgba(255,255,255,0.55);
+  --shell-rim-soft: rgba(255,255,255,0.22);
+  --shell-shadow:   0 24px 60px rgba(10,14,20,0.45),
+                    0 2px 8px rgba(10,14,20,0.18);
+
+  /* Topbar glass (slightly cooler/whiter than shell) */
+  --topbar-fill:    rgba(238,244,250,0.22);
+  --topbar-rim:     rgba(255,255,255,0.32);
+
+  /* Radii */
+  --r-pill:    100px;
+  --r-card:    14px;
+  --r-section: 16px;
+  --r-btn:     14px;
+  --r-page:    20px;
+  --r-shell:   28px;
+  --r-tile:    12px;
+
+  /* Spacing scale */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+
+  /* Card shadow */
+  --card-shadow: 0 1px 4px rgba(31,35,41,0.06);
+
+  /* Fixed slot heights inside the shell */
+  --topbar-h: 96px;
+  --nav-h:    78px;
+}
+
+/* Theme alternates kept for back-compat with stored settings. */
+body[data-accent="gold"]  { --amber-light:#FFE27A; --amber:#F6C73A; --amber-dark:#DFA21F; --ember:#B77900; --grad-amber:linear-gradient(135deg,#FFE27A,#DFA21F); }
+body[data-accent="ember"] { --amber-light:#FFB45A; --amber:#F38A2E; --amber-dark:#D96A1D; --ember:#C65F1A; --grad-amber:linear-gradient(135deg,#FFB45A,#D96A1D); }
+
+/* Glass strength variants */
+body[data-glass="clear"]  { --glass-blur: blur(16px) saturate(140%); }
+body[data-glass="strong"] { --glass-blur: blur(30px) saturate(160%); }
+
+
+/* =====================================================
+   2. RESET & BASE
+   ===================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+html {
+  min-height: 100%;
+  background: #1A1F24;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  position: relative;
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  color: var(--ink);
+  font-family:
+    -apple-system, BlinkMacSystemFont,
+    "DM Sans", "Inter", "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  background-color: #1A1F24;
+  /* Alpine mountain bg painted directly on body — fixed, so it sits
+     behind the shell as a stable abstract layer for the blur to refract. */
+  background-image: var(--app-bg-image);
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+}
+
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; touch-action: manipulation; -webkit-appearance: none; appearance: none; background: none; border: 0; padding: 0; }
+input, textarea, select { min-width: 0; }
+img, svg { display: block; max-width: 100%; }
+a { color: var(--ember); text-decoration: none; }
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0; padding: 0; margin: -1px;
+}
+
+
+/* =====================================================
+   3. PAGE STAGE (.page) — full-viewport transparent stage
+   The alpine photo on body shows through. The shell is the
+   only visible frame.
+   ===================================================== */
+
+.page {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding:
+    max(20px, env(safe-area-inset-top, 20px))
+    8px
+    max(16px, env(safe-area-inset-bottom, 16px));
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* page--with-nav is now harmless; nav lives inside the shell. */
+.page--with-nav { /* no-op */ }
+
+
+/* =====================================================
+   4. GLASS SHELL — the frosted frame everything lives inside
+   Three children: .glass-topbar, .content-stack, .bottom-nav
+   ===================================================== */
+
+.glass-shell {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-radius: var(--r-shell);
+  background: var(--shell-fill);
+  backdrop-filter: var(--shell-blur);
+  -webkit-backdrop-filter: var(--shell-blur);
+  border: 1px solid var(--shell-rim-soft);
+  box-shadow:
+    inset 0 1px 0 var(--shell-rim),
+    inset 0 -1px 0 rgba(255,255,255,0.10),
+    var(--shell-shadow);
+  overflow: hidden;
+  isolation: isolate;
+  min-height: calc(100dvh - 40px);
+}
+
+/* Thin vertical highlight along the inside-left edge */
+.glass-shell::before {
+  content: "";
+  position: absolute;
+  left: 1px; top: 8px; bottom: 8px;
+  width: 1px;
+  background: linear-gradient(180deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.28) 30%,
+    rgba(255,255,255,0.28) 70%,
+    rgba(255,255,255,0) 100%);
+  pointer-events: none;
+  z-index: 5;
+}
+
+
+/* =====================================================
+   5. GLASS TOPBAR — structural header inside the shell
+   Holds title + subtitle + optional back button + action slot.
+   ===================================================== */
+
+.glass-topbar {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 26px 18px 18px;
+  background: transparent;
+  border-bottom: 1px solid var(--topbar-rim);
+  color: #f4f7fb;
+}
+.glass-topbar::before {
+  content: "";
+  position: absolute;
+  top: 8px; left: 50%;
+  transform: translateX(-50%);
+  width: 38px; height: 5px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.55);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.18);
+}
+
+.glass-topbar::after {
+  content: "";
+  position: absolute;
+  left: 14px; right: 14px; bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.55) 50%,
+    rgba(255,255,255,0) 100%);
+  pointer-events: none;
+}
+
+.glass-topbar__back {
+  width: 36px; height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  color: rgba(255,255,255,0.92);
+  background: rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.28);
+  -webkit-backdrop-filter: blur(8px) saturate(150%);
+  backdrop-filter: blur(8px) saturate(150%);
+  cursor: pointer;
+}
+.glass-topbar__back svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+/* When there's no back button, the first column collapses */
+.glass-topbar--no-back { grid-template-columns: minmax(0, 1fr) auto; }
+
+.glass-topbar__titles {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.glass-topbar__eyebrow {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.88);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.glass-topbar__title {
+  margin: 0;
+  font-size: var(--density-title, 22px);
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  line-height: 1.1;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.18);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.glass-topbar__sub {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(255,255,255,0.92);
+  line-height: 1.4;
+  white-space: normal;
+}
+
+.glass-topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+
+/* =====================================================
+   6. CONTENT STACK — the white inner page (scrolls)
+   ===================================================== */
+
+.content-stack {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--density-stack-gap, 12px);
+  padding: var(--density-stack-pad, 14px 12px 86px);
+  background: rgba(247,250,253,0.18);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  backdrop-filter: blur(20px) saturate(150%);
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* When the topbar is present (every screen), the inner page nestles
+   into it with a soft inward radius so the join reads as one volume. */
+.glass-shell .content-stack {
+  border-radius: 0;
+  margin-top: 0;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+/* Generic row with space-between */
+.row-spread {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.row-spread > * { min-width: 0; }
+
+
+/* =====================================================
+   7. DASHBOARD HERO — REMOVED
+   The old in-page hero is replaced by the glass topbar.
+   We keep the class name working for back-compat: it just
+   renders as a transparent intro band over the white page.
+   ===================================================== */
+
+.dashboard-hero { display: none; }
+
+.dashboard-hero__eyebrow {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--storm);
+  margin-bottom: 4px;
+}
+
+.dashboard-hero h2 {
+  margin: 0 0 4px;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.2px;
+  color: var(--ink);
+}
+
+.dashboard-hero p {
+  margin: 0;
+  max-width: 360px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--storm);
+}
+
+
+/* =====================================================
+   8. TYPOGRAPHY UTILITIES
+   ===================================================== */
+
+.t-cap {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: var(--ash);
+  line-height: 1.1;
+}
+
+.t-label { font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.2; }
+.t-title { font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.25; }
+.t-sub   { font-size: 12.5px; color: var(--storm); font-weight: 500; line-height: 1.5; }
+.t-tiny  { font-size: 10.5px; color: var(--fog); font-weight: 500; line-height: 1.3; }
+
+.t-truncate {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.subsection-title {
+  padding: 10px 14px 4px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--storm);
+}
+
+
+/* =====================================================
+   9. BUTTONS
+   ===================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: var(--r-btn);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1px;
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.15s ease;
+}
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.btn--primary {
+  background: var(--grad-amber);
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.45),
+    0 4px 16px rgba(243,138,46,0.36);
+}
+
+.btn--ghost {
+  background: var(--frost);
+  color: var(--ink);
+  border: 1px solid var(--mist);
+  box-shadow: 0 1px 2px rgba(31,35,41,0.04);
+}
+
+.btn--danger {
+  background: var(--bad-soft);
+  color: #B91C1C;
+  border: 1px solid rgba(239,68,68,0.28);
+}
+
+.btn--full { width: 100%; }
+
+
+/* =====================================================
+   10. CARDS
+   ===================================================== */
+
+.card {
+  background: rgba(255,255,255,0.55);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(255,255,255,0.6);
+  border-radius: var(--r-card);
+  overflow: hidden;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.7),
+    0 1px 4px rgba(31,35,41,0.06);
+}
+.card-pad { padding: var(--density-card-pad, 14px 16px); }
+
+
+/* =====================================================
+   11. GLASS PRIMITIVES
+   ===================================================== */
+
+.glass-section {
+  position: relative;
+  background: var(--glass-frost);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-rim);
+  border-radius: var(--r-section);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.85),
+    0 1px 4px rgba(31,35,41,0.06);
+  padding: 14px;
+  overflow: hidden;
+}
+
+.glass-tabs {
+  display: flex;
+  gap: 3px;
+  padding: 4px;
+  background: rgba(255,255,255,0.42);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  backdrop-filter: blur(14px) saturate(150%);
+  border: 1px solid rgba(255,255,255,0.6);
+  border-radius: 14px;
+  max-width: 100%;
+  overflow: hidden;
+  scrollbar-width: none;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+}
+.glass-tabs::-webkit-scrollbar { display: none; }
+
+.glass-tab {
+  flex: 1;
+  min-width: 0;
+  min-height: 36px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 11px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--storm);
+  background: transparent;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.glass-tab.on {
+  background: var(--grad-amber);
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.45),
+    0 2px 8px rgba(243,138,46,0.32);
+}
+
+
+/* =====================================================
+   12. PILLS
+   ===================================================== */
+
+.today-pill,
+.visit-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.today-pill {
+  background: rgba(255,176,32,0.14);
+  color: var(--ember);
+  border: 1px solid rgba(255,176,32,0.28);
+}
+
+.visit-pill {
+  background: var(--good-soft);
+  color: var(--good);
+  border: 1px solid rgba(34,197,94,0.22);
+}
+
+.state-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: rgba(127,148,168,0.12);
+  color: var(--storm);
+  border: 1px solid rgba(127,148,168,0.22);
+}
+
+.state-pill--to-do      { background: rgba(127,148,168,0.12); color: var(--storm); border-color: rgba(127,148,168,0.22); }
+.state-pill--open       { background: rgba(255,176,32,0.14); color: var(--ember); border-color: rgba(255,176,32,0.28); }
+.state-pill--done,
+.state-pill--sold-in,
+.state-pill--pod-placed,
+.state-pill--in-account { background: var(--good-soft); color: var(--good); border-color: rgba(34,197,94,0.22); }
+.state-pill--rejected   { background: var(--bad-soft);  color: #B91C1C; border-color: rgba(239,68,68,0.22); }
+
+
+/* =====================================================
+   13. ROUTE PROGRESS CARD
+   ===================================================== */
+
+.route-progress__head { margin-bottom: 14px; }
+
+.route-progress__cockpit {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.route-progress__legend {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--ash);
+  min-width: 0;
+}
+
+.route-progress__legend span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.route-progress__legend b {
+  margin-left: auto;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.route-progress-card .btn--full { margin-top: 4px; }
+
+.legend-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.legend-dot--visited { background: #22C55E; box-shadow: 0 0 0 2px rgba(34,197,94,0.18); }
+.legend-dot--pending { background: var(--amber); box-shadow: 0 0 0 2px rgba(255,176,32,0.20); }
+.legend-dot--opps    { background: #EF4444; box-shadow: 0 0 0 2px rgba(239,68,68,0.18); }
+
+
+/* =====================================================
+   14. CIRCLE METER
+   ===================================================== */
+
+.circle-meter {
+  --pct: 0;
+  --size: 78px;
+  --thickness: 7px;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  position: relative;
+  flex: 0 0 auto;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background:
+    conic-gradient(
+      from 0deg,
+      var(--amber-dark) 0%,
+      var(--amber) calc(var(--pct) * 1%),
+      var(--mist) calc(var(--pct) * 1%) 100%
+    );
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.6),
+    0 4px 14px rgba(243,138,46,0.18);
+}
+
+.circle-meter::before {
+  content: "";
+  position: absolute;
+  inset: var(--thickness);
+  border-radius: 50%;
+  background: #fff;
+  z-index: 0;
+}
+
+.circle-meter > * { position: relative; z-index: 1; }
+
+.circle-meter span {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1;
+  letter-spacing: -0.4px;
+}
+
+.circle-meter small {
+  margin-top: 2px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--storm);
+}
+
+.insight-tile .circle-meter {
+  --size: 52px;
+  --thickness: 6px;
+}
+.insight-tile .circle-meter span { font-size: 13px; }
+.insight-tile .circle-meter small { font-size: 8.5px; }
+
+
+/* =====================================================
+   15. PROGRESS TRACK
+   ===================================================== */
+
+.progress-track {
+  width: 100%;
+  height: 6px;
+  background: var(--mist);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.progress-track > span {
+  display: block;
+  height: 100%;
+  background: var(--grad-amber);
+  border-radius: var(--r-pill);
+  transition: width 0.3s ease;
+}
+
+
+/* =====================================================
+   16. GLANCE PANEL & INSIGHT TILES
+   ===================================================== */
+
+.glance-panel { padding: 14px 14px 18px; }
+.glance-panel .insight-strip { padding-bottom: 4px; }
+.glance-panel__head { margin-bottom: 12px; }
+.glance-panel .glance-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.1px;
+  margin: 0;
+  line-height: 1.2;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+}
+.glance-panel .t-cap   { color: var(--ember); }
+.glance-panel .t-title { color: var(--ink); }
+
+.section-minihead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.insight-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  padding-top: 0;
+  max-width: 100%;
+}
+
+.insight-tile {
+  background: rgba(255,255,255,0.92);
+  border: 1px solid rgba(255,255,255,0.78);
+  border-radius: var(--r-tile);
+  padding: 8px 4px;
+  text-align: center;
+  min-width: 0;
+  box-shadow: 0 1px 3px rgba(31,35,41,0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2px;
+}
+
+.insight-tile .t-cap {
+  font-size: 9px;
+  letter-spacing: 0.4px;
+  color: var(--ash);
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+  max-width: 100%;
+  font-weight: 700;
+}
+
+.insight-tile__value {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1;
+  letter-spacing: -0.3px;
+  margin: 4px 0 2px;
+}
+
+.insight-tile .t-tiny {
+  font-size: 9px;
+  color: var(--fog);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.insight-tile--good .insight-tile__value  { color: var(--good); }
+.insight-tile--warn .insight-tile__value,
+.insight-tile--amber .insight-tile__value { color: var(--ember); }
+.insight-tile--bad  .insight-tile__value  { color: var(--bad); }
+
+.insight-tile--good  { border-color: rgba(34,197,94,0.36); }
+.insight-tile--warn,
+.insight-tile--amber { border-color: rgba(255,176,32,0.42); }
+.insight-tile--bad   { border-color: rgba(239,68,68,0.36); }
+
+
+/* =====================================================
+   17. DASHBOARD GRID / METRIC CARDS
+   ===================================================== */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  max-width: 100%;
+}
+
+.metric-card {
+  background: rgba(255,255,255,0.55);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(255,255,255,0.6);
+  border-radius: var(--r-card);
+  padding: 12px 14px 14px;
+  text-align: left;
+  min-width: 0;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.7),
+    0 1px 4px rgba(31,35,41,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.metric-card .t-cap {
+  font-size: 9.5px;
+  letter-spacing: 0.7px;
+  color: var(--storm);
+  margin-bottom: 2px;
+}
+
+.metric-card__value {
+  font-size: var(--density-metric, 26px);
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
+.metric-card__delta {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--storm);
+}
+
+.metric-card .t-tiny { font-size: 10px; color: var(--fog); }
+
+.metric-card--good .metric-card__value,
+.metric-card--good .metric-card__delta { color: var(--good); }
+.metric-card--warn .metric-card__value,
+.metric-card--warn .metric-card__delta { color: var(--ember); }
+.metric-card--bad  .metric-card__value,
+.metric-card--bad  .metric-card__delta { color: var(--bad); }
+
+.metric-health-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+
+/* =====================================================
+   18. BOTTOM NAV — now a flex child of .glass-shell
+   ===================================================== */
+
+.bottom-nav {
+  position: relative;
+  z-index: 4;
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  padding: 8px 10px calc(10px + env(safe-area-inset-bottom, 0px));
+  background: rgba(247,250,253,0.32);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
+  border-top: 1px solid rgba(255,255,255,0.42);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.45);
+}
+
+.bottom-nav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 56px;
+  background: transparent;
+  border: 0;
+  border-radius: 12px;
+  padding: 4px 4px 6px;
+  cursor: pointer;
+  font-family: inherit;
+  min-width: 0;
+}
+
+.bottom-nav__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 30px;
+  border-radius: 11px;
+  color: var(--ash);
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.bottom-nav__icon svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  display: block;
+}
+
+.bottom-nav__label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ash);
+  letter-spacing: 0.2px;
+  line-height: 1.1;
+}
+
+.bottom-nav__item.active .bottom-nav__icon {
+  background: var(--grad-amber);
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.45),
+    0 3px 10px rgba(243,138,46,0.42);
+}
+
+.bottom-nav__item.active .bottom-nav__label {
+  color: var(--ember);
+  font-weight: 700;
+}
+
+
+/* =====================================================
+   19. ACCOUNT LIST
+   ===================================================== */
+
+.account-list {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+}
+
+.account-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 12px 14px;
+  border: 0;
+  border-bottom: 1px solid var(--line-soft);
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.account-row:last-child { border-bottom: 0; }
+.account-row:active     { background: rgba(31,35,41,0.04); }
+
+.account-row__dot {
+  width: 32px; height: 32px;
+  flex: 0 0 auto;
+  border-radius: 10px;
+  background: var(--frost);
+  border: 1px solid var(--mist);
+  color: var(--storm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+.account-row__dot.done {
+  background: var(--grad-amber);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.40), 0 2px 8px rgba(243,138,46,0.32);
+}
+.account-row__dot svg { width: 16px; height: 16px; stroke-width: 3; }
+
+.account-row__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.account-row__topline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.account-row__topline .t-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  text-transform: none;
+  letter-spacing: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.account-row__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--storm);
+}
+.account-row__stats b { color: var(--ink); font-weight: 700; }
+
+.account-row__meta {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--fog);
+}
+
+.health-grade {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.30), 0 2px 6px rgba(20,27,35,0.10);
+}
+.health-grade--good { background: linear-gradient(135deg, #22C55E, #16A34A); }
+.health-grade--warn { background: var(--grad-amber); }
+.health-grade--bad  { background: linear-gradient(135deg, #EF4444, #DC2626); }
+
+
+/* =====================================================
+   20. ACCOUNT TABS — sticks to top of inner page
+   ===================================================== */
+
+.account-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  margin-bottom: 4px;
+  background: var(--page);
+  padding-bottom: 4px;
+}
+
+
+/* =====================================================
+   21. SECTION HEADERS / CHECK ROWS / WORK ROWS / FORMS
+   (unchanged from prior)
+   ===================================================== */
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 0;
+  border-bottom: 1px solid var(--line-soft);
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.check-row:last-child { border-bottom: 0; }
+.check-row:active     { background: rgba(31,35,41,0.04); }
+
+.check-state {
+  width: 22px; height: 22px;
+  flex-shrink: 0;
+  border-radius: 7px;
+  border: 2px solid var(--mist);
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 11px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.check-state svg { width: 13px; height: 13px; stroke-width: 3; }
+
+.check-row.done .check-state {
+  background: var(--grad-amber);
+  border-color: transparent;
+}
+.check-row.done {
+  color: var(--fog);
+  text-decoration: line-through;
+}
+
+.work-row,
+.void-row,
+.pricing-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.work-row:last-child,
+.void-row:last-child,
+.pricing-row:last-child { border-bottom: 0; }
+
+.work-row__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 12px;
+  color: var(--storm);
+}
+.work-row__body b {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.work-row__body span { min-width: 0; }
+
+.work-row__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 9px;
+  border: 1px solid var(--mist);
+  background: var(--frost);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  flex: 0 0 auto;
+}
+
+.void-row__sku {
+  flex: 1;
+  min-width: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pricing-row {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  padding: 12px 14px;
+}
+.pricing-row__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.pricing-row__head b { font-size: 13px; font-weight: 700; color: var(--ink); }
+.pricing-row__head span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pricing-metrics {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: var(--storm);
+}
+.pricing-metrics span {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--frost);
+}
+.pricing-metrics b { font-size: 13px; font-weight: 700; color: var(--ink); }
+.pricing-metrics small {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--storm);
+}
+
+.inline-add {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--line-soft);
+}
+.inline-add .field-input { flex: 1; }
+
+.button-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.button-row .btn { flex: 1 1 130px; }
+
+.field-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--storm);
+}
+
+.field-input,
+.field-select,
+.field-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--mist);
+  border-radius: 10px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field-textarea {
+  min-height: 80px;
+  resize: vertical;
+  line-height: 1.5;
+}
+.field-textarea--compact { min-height: 56px; }
+
+.field-input:focus,
+.field-select:focus,
+.field-textarea:focus {
+  outline: none;
+  border-color: var(--amber-dark);
+  box-shadow: 0 0 0 3px rgba(255,176,32,0.18);
+}
+
+.form-grid       { display: grid; gap: 10px; }
+.form-grid--two  { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.form-grid--pad  { padding: 14px; }
+
+.link-btn {
+  background: none;
+  border: 0;
+  padding: 4px 6px;
+  color: var(--ember);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.link-btn--danger { color: #B91C1C; }
+
+.topbar-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: 11px;
+  background: rgba(255,255,255,0.16);
+  border: 1px solid rgba(255,255,255,0.32);
+  color: rgba(255,255,255,0.92);
+  -webkit-backdrop-filter: blur(8px) saturate(150%);
+  backdrop-filter: blur(8px) saturate(150%);
+  cursor: pointer;
+}
+.topbar-icon-btn svg { width: 20px; height: 20px; stroke-width: 2.4; }
+
+
+/* =====================================================
+   22. NOTES / ACTIVITY / SUMMARY / COLLAPSIBLE / SETTINGS / ROUTE MGR / MEDIA
+   (preserved from prior)
+   ===================================================== */
+
+.note-item { padding: 12px 14px; border-bottom: 1px solid var(--line-soft); }
+.note-item:last-child { border-bottom: 0; }
+.note-item .row-spread b {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.note-preview,
+.note-item p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ash);
+  white-space: pre-wrap;
+}
+
+.activity-row {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 13px;
+  color: var(--ink);
+}
+.activity-row:last-child { border-bottom: 0; }
+
+.summary-box {
+  width: 100%;
+  background: var(--frost);
+  border: 1px solid var(--mist);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-top: 10px;
+  font-family: inherit;
+  font-size: 12.5px;
+  color: var(--ash);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  resize: vertical;
+  min-height: 180px;
+}
+.summary-box--short { min-height: 120px; }
+
+.summary-snapshot {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 12px;
+  color: var(--storm);
+}
+.summary-snapshot:last-child { border-bottom: 0; }
+.summary-snapshot b {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.summary-snapshot p {
+  margin: 4px 0 0;
+  font-size: 11.5px;
+  color: var(--storm);
+  line-height: 1.4;
+}
+
+.collapsible-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  background: transparent;
+  border: 0;
+  width: 100%;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.collapsible-head .t-title,
+.collapsible-head .t-sub { display: block; }
+
+.collapse-indicator {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  background: rgba(31,35,41,0.06);
+  color: var(--storm);
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.collapsible-body {
+  padding: 0 0 14px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding: 12px 14px;
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.toggle-row:last-child { border-bottom: 0; }
+.toggle-row span { min-width: 0; flex: 1; }
+.toggle-row b,
+.toggle-row small { display: block; }
+.toggle-row b { font-size: 13px; font-weight: 700; color: var(--ink); }
+.toggle-row small {
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--storm);
+  line-height: 1.4;
+}
+.toggle-row input {
+  width: 22px; height: 22px;
+  accent-color: var(--amber);
+  flex: 0 0 auto;
+}
+
+.route-editor-control {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.route-manager-row {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.route-manager-row:last-child { border-bottom: 0; }
+
+.route-manager-head {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+}
+.route-manager-head b,
+.route-manager-head small { display: block; }
+.route-manager-head b { font-size: 13px; font-weight: 700; color: var(--ink); }
+.route-manager-head small { margin-top: 2px; font-size: 11px; color: var(--storm); }
+
+.route-position {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(255,176,32,0.16);
+  color: var(--ember);
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.route-manager-controls {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.media-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  padding: 8px 14px 12px;
+}
+
+.media-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 70px;
+  border: 1px solid var(--mist);
+  border-radius: 14px;
+  background: var(--frost);
+  color: var(--ink);
+  padding: 12px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.media-icon { color: var(--ink); display: inline-flex; }
+.media-icon svg { width: 22px; height: 22px; stroke-width: 2.2; }
+
+.media-label { font-size: 12px; font-weight: 700; color: var(--ink); }
+
+.attachment-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 14px 12px;
+}
+.attachment-list span {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  background: rgba(31,35,41,0.06);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ash);
+}
+
+.chip-row,
+.structured-note-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+.chip-row span,
+.structured-note-meta span {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  background: var(--frost);
+  border: 1px solid var(--mist);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--ash);
+  white-space: nowrap;
+}
+
+.empty {
+  padding: 18px 14px;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--fog);
+}
+
+.import-preview {
+  max-height: 220px;
+  overflow: auto;
+  margin: 12px 14px 0;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--frost);
+  border: 1px solid var(--mist);
+  color: var(--ash);
+  font-size: 11px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  white-space: pre-wrap;
+}
+
+
+/* =====================================================
+   23. ICON STROKES (shared rule)
+   ===================================================== */
+
+.bottom-nav__icon svg,
+.topbar-icon-btn svg,
+.media-icon svg,
+.check-state svg,
+.account-row__dot svg,
+.glass-topbar__back svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* =====================================================
+   24. LEGACY HEADER + FLOATING ACTIONS — neutralized
+   The old header/floating-actions surfaces were the source of the
+   visual mismatch. Hide them; the new .glass-topbar replaces them.
+   ===================================================== */
+
+.glass-header,
+.floating-actions { display: none; }
+
+
+/* =====================================================
+   25. RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 520px) {
+  .page {
+    width: 100%;
+    max-width: none;
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+}
+
+@media (max-width: 360px) {
+  .settings-grid,
+  .form-grid--two {
+    grid-template-columns: 1fr;
+  }
+  .insight-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .glass-topbar__title { font-size: 20px; }
+  .glass-tab { font-size: 11.5px; padding: 8px 6px; }
+  .content-stack { padding-left: 10px; padding-right: 10px; }
+  .route-progress__cockpit { gap: 12px; }
+  .circle-meter { --size: 64px; }
+  .circle-meter span { font-size: 15px; }
+  .route-progress__legend { font-size: 12px; }
+  .account-row { gap: 8px; padding: 10px 12px; }
+  .metric-card__value { font-size: 22px; }
+}
+
+
+/* =====================================================
+   26. DARK MODE
+   ===================================================== */
+
+body.dark-mode {
+  --page: #05070A;
+  --card: rgba(5,7,10,0.90);
+  --line: rgba(255,255,255,0.58);
+  --line-soft: rgba(255,255,255,0.28);
+  --ink: #FFFFFF;
+  --ash: rgba(255,255,255,0.86);
+  --storm: rgba(255,255,255,0.74);
+  --fog: rgba(255,255,255,0.58);
+  --mist: rgba(255,255,255,0.28);
+  --frost: rgba(5,7,10,0.82);
+  --shell-fill: rgba(5,7,10,0.50);
+  --topbar-fill: rgba(5,7,10,0.74);
+}
+body.dark-mode .field-input,
+body.dark-mode .field-select,
+body.dark-mode .field-textarea,
+body.dark-mode .summary-box {
+  background: rgba(5,7,10,0.86);
+  border-color: rgba(255,255,255,0.58);
+  color: var(--ink);
+}
+body.dark-mode .insight-tile {
+  background: rgba(5,7,10,0.86);
+  border-color: rgba(255,255,255,0.58);
+  color: var(--ink);
+}
+body.dark-mode .bottom-nav {
+  background: rgba(15,20,26,0.55);
+  border-top-color: rgba(255,255,255,0.10);
+}
+body.dark-mode .account-tabs { background: var(--page); }
+
+
+/* =====================================================
+   17. ALPENGLOW v0.10 — HERO BAND + FLOATING SHELL
+   Hero text sits ABOVE the shell on the photo background;
+   shell barely tints the bg (whisper material) like a
+   glass card floating over imagery.
+   ===================================================== */
+
+.page--with-hero {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  height: 100%;
+  min-height: 100%;
+}
+
+.hero-band {
+  flex: 0 0 auto;
+  padding: 28px 22px 18px;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.35);
+}
+.hero-band__eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 6px;
+}
+.hero-band__title {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  line-height: 1.1;
+  margin: 0 0 4px;
+  color: #ffffff;
+}
+.hero-band__sub {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.92);
+  line-height: 1.4;
+}
+
+.glass-shell--floating {
+  flex: 1 1 auto;
+  min-height: 0;
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  /* iOS-style pull tab */
+}
+.glass-shell--floating::after {
+  content: "";
+  position: absolute;
+  top: 8px; left: 50%;
+  transform: translateX(-50%);
+  width: 38px; height: 5px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.55);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.18);
+  z-index: 6;
+}
+.glass-shell--floating .content-stack {
+  padding-top: 22px;
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* =====================================================
+   18. MATERIAL HIERARCHY — three layers of opacity
+   shell  = barely tints (whisper override)
+   panels = soft frosted glass (fields on top of card)
+   tiles  = solid white (data containers)
+   ===================================================== */
+
+.glass-shell--floating .glass-section,
+.glass-shell--floating .card {
+  background: rgba(255,255,255,0.18);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(255,255,255,0.32);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.45),
+    0 4px 16px rgba(10,14,20,0.18);
+}
+
+/* Insight tiles: flat white */
+.glass-shell--floating .insight-tile {
+  background: #ffffff;
+  border-color: rgba(255,255,255,0.95);
+  box-shadow: 0 2px 6px rgba(10,14,20,0.10);
+}
+
+/* Metric cards: flat white */
+.glass-shell--floating .metric-card {
+  background: #ffffff;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border: 1px solid rgba(255,255,255,0.95);
+  box-shadow: 0 2px 6px rgba(10,14,20,0.10);
+}
+
+/* Route progress card stays flat white because it is the data container */
+.glass-shell--floating .route-progress-card {
+  background: #ffffff;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border: 1px solid rgba(255,255,255,0.95);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.7),
+    0 6px 20px rgba(10,14,20,0.18);
+}
+
+/* Glass tabs: medium frosted (a "field" on top of the card) */
+.glass-shell--floating .glass-tabs {
+  background: rgba(255,255,255,0.18);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(255,255,255,0.40);
+}
+
+/* Glance panel: frosted (the panel the white tiles sit ON) */
+.glass-shell--floating .glance-panel {
+  background: rgba(255,255,255,0.16);
+  border-color: rgba(255,255,255,0.30);
+}
+
+/* =====================================================
+   19. SCOREBOARD METRIC CARDS — head row + stepper
+   ===================================================== */
+
+.metric-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.stepper__btn {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid rgba(31,35,41,0.14);
+  background: rgba(255,255,255,0.85);
+  color: var(--ink);
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.12s ease, transform 0.08s ease;
+}
+.stepper__btn:active {
+  transform: scale(0.92);
+  background: rgba(255,255,255,1);
+}
+
+
+/* =====================================================
+   20. PACKAGE 17 - ANNOTATED DASHBOARD FIDELITY PASS
+   Keeps the Claude/prototype corrections scoped to Dashboard.
+   ===================================================== */
+
+.page.page--with-hero {
+  width: min(100%, 348px);
+  max-width: 348px;
+  padding: 18px 10px 14px;
+  margin: 0 auto;
+}
+
+.page--with-hero .hero-band {
+  text-align: center;
+  padding: 8px 12px 14px;
+}
+
+.page--with-hero .hero-band__eyebrow {
+  font-size: 9px;
+  letter-spacing: 1.25px;
+  margin-bottom: 4px;
+}
+
+.page--with-hero .hero-band__title {
+  font-size: 22px;
+  letter-spacing: -0.25px;
+  margin-bottom: 2px;
+}
+
+.page--with-hero .hero-band__sub {
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.glass-shell--floating {
+  border-radius: 28px;
+  min-height: 0;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.62),
+    inset 0 -1px 0 rgba(255,255,255,0.20),
+    0 18px 44px rgba(10,14,20,0.42);
+}
+
+.glass-shell--floating::before {
+  display: none;
+}
+
+.glass-shell--floating::after {
+  width: 34px;
+  height: 4px;
+  top: 10px;
+  background: rgba(255,255,255,0.62);
+}
+
+.glass-shell--floating .content-stack {
+  gap: 9px;
+  padding: 20px 9px 10px;
+}
+
+.glass-shell--floating .glass-tabs {
+  min-height: 42px;
+  padding: 4px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.20);
+  border-color: rgba(255,255,255,0.48);
+}
+
+.glass-shell--floating .glass-tab {
+  min-height: 32px;
+  padding: 6px 4px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.78);
+}
+
+.glass-shell--floating .glass-tab.on {
+  color: var(--ink);
+}
+
+.glass-shell--floating .route-progress-card {
+  padding: 11px 12px 12px;
+  border-radius: 15px;
+}
+
+.glass-shell--floating .route-progress__head {
+  margin-bottom: 10px;
+}
+
+.glass-shell--floating .route-progress__cockpit {
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.glass-shell--floating .route-progress__legend {
+  gap: 5px;
+  font-size: 11px;
+}
+
+.glass-shell--floating .route-progress-card .circle-meter {
+  --size: 64px;
+  --thickness: 6px;
+}
+
+.glass-shell--floating .progress-track {
+  height: 5px;
+  margin-bottom: 12px;
+}
+
+.glass-shell--floating .btn--full {
+  min-height: 42px;
+  border-radius: 13px;
+}
+
+.glass-shell--floating .glance-panel {
+  padding: 10px;
+  border-radius: 16px;
+}
+
+.glass-shell--floating .section-minihead {
+  margin-bottom: 8px;
+}
+
+.glass-shell--floating .glance-title {
+  font-size: 12px;
+}
+
+.glass-shell--floating .insight-strip {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 5px;
+  padding-bottom: 0;
+}
+
+.glass-shell--floating .insight-tile {
+  min-height: 70px;
+  padding: 7px 3px 6px;
+  border-radius: 10px;
+}
+
+.glass-shell--floating .insight-tile .t-cap {
+  font-size: 7px;
+  letter-spacing: 0.25px;
+}
+
+.glass-shell--floating .insight-tile__value {
+  font-size: 16px;
+  margin: 3px 0 1px;
+}
+
+.glass-shell--floating .insight-tile .t-tiny {
+  font-size: 7.5px;
+  line-height: 1.15;
+}
+
+.glass-shell--floating .insight-tile .circle-meter {
+  --size: 42px;
+  --thickness: 5px;
+}
+
+.glass-shell--floating .insight-tile .circle-meter span {
+  font-size: 10px;
+}
+
+.glass-shell--floating .insight-tile .circle-meter small {
+  font-size: 6.5px;
+}
+
+.glass-shell--floating .dashboard-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.glass-shell--floating .metric-card {
+  position: relative;
+  min-height: 76px;
+  padding: 8px 7px 7px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.glass-shell--floating .metric-card__head {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.glass-shell--floating .metric-card .t-cap {
+  display: block;
+  max-width: calc(100% - 32px);
+  font-size: 7px;
+  letter-spacing: 0.35px;
+  text-align: left;
+  line-height: 1.1;
+}
+
+.glass-shell--floating .metric-card__value {
+  font-size: 17px;
+  letter-spacing: -0.25px;
+}
+
+.glass-shell--floating .metric-card .t-tiny {
+  font-size: 8px;
+  line-height: 1.1;
+}
+
+.glass-shell--floating .stepper {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  gap: 2px;
+}
+
+.glass-shell--floating .stepper__btn {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border-radius: 7px;
+  font-size: 12px;
+}
+
+.glass-shell--floating .collapsible-card {
+  background: rgba(255,255,255,0.18);
+  border-color: rgba(255,255,255,0.34);
+}
+
+.glass-shell--floating .bottom-nav {
+  margin: 0 8px 8px;
+  padding: 8px 8px calc(8px + env(safe-area-inset-bottom, 0px));
+  border: 1px solid rgba(255,255,255,0.48);
+  border-radius: 22px;
+  background: rgba(255,255,255,0.26);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.56),
+    0 10px 24px rgba(10,14,20,0.24);
+}
+
+.glass-shell--floating .bottom-nav__item {
+  min-height: 48px;
+  border-radius: 16px;
+}
+
+.glass-shell--floating .bottom-nav__icon {
+  width: 34px;
+  height: 27px;
+  color: var(--ink);
+}
+
+.glass-shell--floating .bottom-nav__icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+.glass-shell--floating .bottom-nav__label {
+  color: #ffffff;
+  font-size: 8.5px;
+  font-weight: 800;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.28);
+}
+
+.glass-shell--floating .bottom-nav__item.active .bottom-nav__icon {
+  color: #ffffff;
+}
+
+.glass-shell--floating .bottom-nav__item.active .bottom-nav__label {
+  color: #ffffff;
+}
+
+@media (max-width: 360px) {
+  .page.page--with-hero {
+    width: min(100%, 336px);
+    max-width: 336px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .glass-shell--floating .insight-strip {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .glass-shell--floating .dashboard-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  .glass-shell--floating .metric-card {
+    min-height: 74px;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .glass-shell--floating .stepper__btn {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+  }
+}
+
+
+/* =====================================================
+   23. PACKAGE 20 - ALPENGLOW PHOTO CROP
+   Keep real iOS status chrome; tune only the mountain image crop.
+   ===================================================== */
+
+@media (max-width: 520px) {
+  body {
+    background-size: auto, cover;
+    background-position: center top, center top;
+  }
+}
+
+@media (max-width: 360px) {
+  body {
+    background-position: center top, center top;
+  }
+}
+
+
+/* =====================================================
+   24. PACKAGE 21 - CLEARER DASHBOARD BASE GLASS
+   Lower the base opacity; keep white cards readable.
+   ===================================================== */
+
+.glass-shell--floating {
+  background: rgba(245,249,253,0.075);
+  border-color: rgba(255,255,255,0.34);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.48),
+    inset 0 -1px 0 rgba(255,255,255,0.14),
+    0 18px 44px rgba(10,14,20,0.38);
+}
+
+.glass-shell--floating .glass-tabs,
+.glass-shell--floating .route-progress-card,
+.glass-shell--floating .glance-panel {
+  background: rgba(255,255,255,0.105);
+  border-color: rgba(255,255,255,0.30);
+}
+
+.glass-shell--floating .bottom-nav {
+  background: rgba(255,255,255,0.09);
+  border-color: rgba(255,255,255,0.34);
+}
+
+
+/* =====================================================
+   22. PACKAGE 19 - DASHBOARD FINAL CALIBRATION
+   Status-safe top space, alpine crop, and tiny-card text fit.
+   ===================================================== */
+
+@media (max-width: 520px) {
+  body {
+    background-size: auto, cover;
+    background-position: center top, center top;
+  }
+}
+
+.page.page--with-hero {
+  padding-top: max(50px, env(safe-area-inset-top, 0px));
+}
+
+.page--with-hero .hero-band {
+  padding-top: 7px;
+  padding-bottom: 13px;
+}
+
+.page--with-hero .hero-band__sub {
+  font-size: 11.5px;
+  line-height: 1.25;
+}
+
+.glass-shell--floating .content-stack {
+  gap: 8px;
+}
+
+.glass-shell--floating .route-progress-card {
+  border-radius: 16px;
+}
+
+.glass-shell--floating .route-progress__head {
+  border-radius: 14px;
+}
+
+.glass-shell--floating .glance-panel {
+  padding: 9px;
+}
+
+.glass-shell--floating .glance-title {
+  font-size: 11.5px;
+  line-height: 1.1;
+}
+
+.glass-shell--floating .insight-strip {
+  gap: 4px;
+}
+
+.glass-shell--floating .insight-tile {
+  min-height: 68px;
+  padding: 6px 2px;
+}
+
+.glass-shell--floating .insight-tile .t-cap {
+  font-size: 6.6px;
+  letter-spacing: 0.1px;
+  line-height: 1.05;
+  color: var(--storm);
+}
+
+.glass-shell--floating .insight-tile__value {
+  font-size: 15px;
+}
+
+.glass-shell--floating .insight-tile .t-tiny {
+  font-size: 7px;
+  color: var(--storm);
+}
+
+.glass-shell--floating .insight-tile .circle-meter {
+  --size: 40px;
+}
+
+.glass-shell--floating .dashboard-grid {
+  gap: 5px;
+}
+
+.glass-shell--floating .metric-card {
+  min-height: 82px;
+  padding: 8px 4px 28px;
+}
+
+.glass-shell--floating .metric-card .t-cap {
+  font-size: 6.8px;
+  letter-spacing: 0.1px;
+  line-height: 1.05;
+  color: var(--storm);
+}
+
+.glass-shell--floating .metric-card__value,
+.glass-shell--floating .metric-card--good .metric-card__value,
+.glass-shell--floating .metric-card--warn .metric-card__value,
+.glass-shell--floating .metric-card--bad .metric-card__value {
+  color: var(--ink);
+}
+
+.glass-shell--floating .metric-card .t-tiny {
+  color: var(--storm);
+}
+
+.glass-shell--floating .stepper {
+  bottom: 5px;
+}
+
+.glass-shell--floating .stepper__btn {
+  color: var(--ink);
+}
+
+.glass-shell--floating .bottom-nav {
+  margin-bottom: 9px;
+  background: rgba(255,255,255,0.12);
+}
+
+@media (max-width: 360px) {
+  .glass-shell--floating .insight-tile .t-cap,
+  .glass-shell--floating .metric-card .t-cap {
+    font-size: 6.3px;
+  }
+
+  .glass-shell--floating .insight-tile__value {
+    font-size: 14px;
+  }
+
+  .glass-shell--floating .metric-card__value {
+    font-size: 16px;
+  }
+}
+
+
+/* =====================================================
+   21. PACKAGE 18 - DASHBOARD MICRO-POLISH
+   Second annotated pass: cleaner glass hierarchy and tile fit.
+   ===================================================== */
+
+.glass-shell--floating {
+  background: rgba(245,249,253,0.14);
+  border-color: rgba(255,255,255,0.42);
+  -webkit-backdrop-filter: blur(24px) saturate(155%);
+  backdrop-filter: blur(24px) saturate(155%);
+}
+
+.glass-shell--floating .glass-tabs {
+  background: rgba(255,255,255,0.16);
+  -webkit-backdrop-filter: blur(18px) saturate(155%);
+  backdrop-filter: blur(18px) saturate(155%);
+}
+
+.glass-shell--floating .glass-tab {
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.20);
+}
+
+.glass-shell--floating .glass-tab.on {
+  color: var(--ink);
+  text-shadow: none;
+}
+
+.glass-shell--floating .route-progress-card {
+  position: relative;
+  background: rgba(255,255,255,0.18);
+  -webkit-backdrop-filter: blur(16px) saturate(145%);
+  backdrop-filter: blur(16px) saturate(145%);
+  border-color: rgba(255,255,255,0.36);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.48),
+    0 6px 18px rgba(10,14,20,0.18);
+}
+
+.glass-shell--floating .route-progress__head {
+  width: calc(100% + 4px);
+  margin: -3px -2px 10px;
+  padding: 9px 10px;
+  border-radius: 13px;
+  background: rgba(255,255,255,0.94);
+  border: 1px solid rgba(255,255,255,0.88);
+  box-shadow: 0 2px 7px rgba(10,14,20,0.10);
+}
+
+.glass-shell--floating .route-progress__cockpit,
+.glass-shell--floating .route-progress-card .progress-track,
+.glass-shell--floating .route-progress-card .btn {
+  position: relative;
+  z-index: 2;
+}
+
+.glass-shell--floating .route-progress-card .btn--primary[data-action="start-route"] {
+  z-index: 3;
+  isolation: isolate;
+  background: var(--grad-amber);
+  color: #fff;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.45),
+    0 5px 16px rgba(243,138,46,0.36);
+}
+
+.glass-shell--floating .glance-panel {
+  background: rgba(255,255,255,0.17);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+}
+
+.glass-shell--floating .insight-tile {
+  justify-content: center;
+  min-height: 66px;
+  gap: 2px;
+  padding: 6px 3px;
+}
+
+.glass-shell--floating .insight-tile .t-cap,
+.glass-shell--floating .insight-tile__value,
+.glass-shell--floating .insight-tile .t-tiny {
+  text-align: center;
+}
+
+.glass-shell--floating .insight-tile .t-tiny {
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.glass-shell--floating .metric-card {
+  justify-content: center;
+  min-height: 84px;
+  padding: 8px 5px 29px;
+}
+
+.glass-shell--floating .metric-card__head {
+  margin-bottom: 2px;
+}
+
+.glass-shell--floating .metric-card .t-cap {
+  max-width: 100%;
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.glass-shell--floating .metric-card__value,
+.glass-shell--floating .metric-card .t-tiny {
+  text-align: center;
+}
+
+.glass-shell--floating .stepper {
+  top: auto;
+  right: auto;
+  left: 50%;
+  bottom: 6px;
+  transform: translateX(-50%);
+  gap: 4px;
+}
+
+.glass-shell--floating .stepper__btn {
+  width: 19px;
+  height: 19px;
+  min-width: 19px;
+  background: rgba(255,255,255,0.96);
+  border-color: rgba(31,35,41,0.16);
+}
+
+.glass-shell--floating .bottom-nav {
+  background: rgba(255,255,255,0.14);
+  -webkit-backdrop-filter: blur(18px) saturate(155%);
+  backdrop-filter: blur(18px) saturate(155%);
+  border-color: rgba(255,255,255,0.42);
+}
+
+.glass-shell--floating .bottom-nav__icon {
+  color: #ffffff;
+}
+
+.glass-shell--floating .bottom-nav__item.active .bottom-nav__icon {
+  background: var(--grad-amber);
+  color: #ffffff;
+}
+
+@media (max-width: 360px) {
+  .glass-shell--floating .metric-card {
+    min-height: 82px;
+    padding-bottom: 28px;
+  }
+
+  .glass-shell--floating .stepper__btn {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+  }
+}
+
+
+/* =====================================================
+   25. PACKAGE 22 - CLEARER WINDOW + ALIGNED TILE LABELS
+   Make the base window recede; keep data tiles structured.
+   ===================================================== */
+
+.glass-shell--floating {
+  background: rgba(245,249,253,0.035);
+  border-color: rgba(255,255,255,0.26);
+  -webkit-backdrop-filter: blur(13px) saturate(145%);
+  backdrop-filter: blur(13px) saturate(145%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.38),
+    inset 0 -1px 0 rgba(255,255,255,0.10),
+    0 18px 42px rgba(10,14,20,0.34);
+}
+
+.glass-shell--floating .glass-tabs,
+.glass-shell--floating .route-progress-card,
+.glass-shell--floating .glance-panel {
+  background: rgba(255,255,255,0.075);
+  border-color: rgba(255,255,255,0.24);
+}
+
+.glass-shell--floating .bottom-nav {
+  background: rgba(255,255,255,0.065);
+  border-color: rgba(255,255,255,0.28);
+}
+
+.glass-shell--floating .insight-tile {
+  display: grid;
+  grid-template-rows: 12px minmax(24px, 1fr) 15px;
+  align-items: center;
+  justify-items: center;
+  justify-content: stretch;
+  gap: 2px;
+}
+
+.glass-shell--floating .insight-tile .t-cap {
+  align-self: start;
+  min-height: 12px;
+  line-height: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.glass-shell--floating .insight-tile__value {
+  align-self: center;
+}
+
+.glass-shell--floating .insight-tile .t-tiny {
+  align-self: end;
+  min-height: 15px;
+}
+
+
+/* =====================================================
+   26. PACKAGE 23 - GLANCE DISTRO STRIP
+   Distro becomes a full-width progress strip; tiles are 4-up.
+   ===================================================== */
+
+.glass-shell--floating .distro-drive-strip {
+  display: block;
+  margin-bottom: 7px;
+  padding: 8px 9px 7px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.94);
+  border: 1px solid rgba(255,255,255,0.88);
+  box-shadow: 0 2px 7px rgba(10,14,20,0.10);
+}
+
+.glass-shell--floating .distro-drive-strip__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.glass-shell--floating .distro-drive-strip__head b {
+  color: var(--ember);
+  font-size: 12px;
+  letter-spacing: 0;
+}
+
+.glass-shell--floating .distro-drive-strip .progress-track {
+  height: 5px;
+  margin: 7px 0 5px;
+  background: rgba(31,35,41,0.10);
+}
+
+.glass-shell--floating .distro-drive-strip__sub {
+  color: var(--storm);
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.glass-shell--floating .insight-strip {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.glass-shell--floating .insight-tile {
+  min-height: 66px;
+}
+
+@media (max-width: 360px) {
+  .glass-shell--floating .insight-strip {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+  }
+}
+
+
+/* =====================================================
+   27. PACKAGE 24 - ELITE SCOREBOARD PANEL
+   Match Dashboard section rhythm: glass wrapper + flat tiles.
+   ===================================================== */
+
+.glass-shell--floating .scoreboard-panel {
+  padding: 9px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.075);
+  border-color: rgba(255,255,255,0.24);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+}
+
+.glass-shell--floating .scoreboard-panel .section-minihead {
+  margin-bottom: 7px;
+}
+
+.glass-shell--floating .scoreboard-panel .glance-title {
+  font-size: 11.5px;
+  line-height: 1.1;
+}
+
+.glass-shell--floating .scoreboard-panel .dashboard-grid {
+  gap: 5px;
+}
+
+
+/* =====================================================
+   28. PACKAGE 25 - DASHBOARD TITLE ALIGNMENT
+   Center section titles and align Route Progress header row.
+   ===================================================== */
+
+.glass-shell--floating .glance-panel .section-minihead,
+.glass-shell--floating .scoreboard-panel .section-minihead {
+  justify-content: center;
+  text-align: center;
+}
+
+.glass-shell--floating .glance-panel .section-minihead > div,
+.glass-shell--floating .scoreboard-panel .section-minihead > div {
+  width: 100%;
+}
+
+.glass-shell--floating .route-progress__head {
+  align-items: center;
+}
+
+.glass-shell--floating .route-progress__head .t-cap {
+  display: flex;
+  align-items: center;
+  min-height: 24px;
+  line-height: 1;
+}
+
+.glass-shell--floating .route-progress__head .today-pill {
+  min-height: 24px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+
+/* =====================================================
+   29. PACKAGE 26 - DASHBOARD TITLE CASE
+   Remove shouty caps except abbreviations and day badge pills.
+   ===================================================== */
+
+.page--with-hero .hero-band__eyebrow,
+.glass-shell--floating .t-cap,
+.glass-shell--floating .distro-drive-strip__head {
+  text-transform: none;
+}
+
+.page--with-hero .hero-band__eyebrow {
+  letter-spacing: 0.55px;
+}
+
+.glass-shell--floating .t-cap {
+  letter-spacing: 0.15px;
+}
+
+.glass-shell--floating .glance-panel .glance-title,
+.glass-shell--floating .scoreboard-panel .glance-title {
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+}
+
+.glass-shell--floating .glance-panel,
+.glass-shell--floating .scoreboard-panel {
+  padding: 9px;
+}
+
+.glass-shell--floating .glance-panel .section-minihead,
+.glass-shell--floating .scoreboard-panel .section-minihead {
+  margin: 0 0 8px;
+}
+
+
+/* =====================================================
+   30. PACKAGE 27 - DASHBOARD SPACING NORMALIZATION
+   One spacing rhythm for shell, panels, tiles, and nav.
+   ===================================================== */
+
+.glass-shell--floating {
+  --dash-gap: 8px;
+  --dash-panel-pad: 9px;
+  --dash-tile-gap: 5px;
+  --dash-tile-pad: 6px 4px;
+}
+
+.glass-shell--floating .content-stack {
+  gap: var(--dash-gap);
+  padding: 20px 9px 9px;
+}
+
+.glass-shell--floating .route-progress-card,
+.glass-shell--floating .glance-panel,
+.glass-shell--floating .scoreboard-panel {
+  margin: 0;
+}
+
+.glass-shell--floating .glance-panel,
+.glass-shell--floating .scoreboard-panel {
+  padding: var(--dash-panel-pad);
+}
+
+.glass-shell--floating .route-progress-card {
+  padding: 10px 11px 11px;
+}
+
+.glass-shell--floating .route-progress__head,
+.glass-shell--floating .section-minihead,
+.glass-shell--floating .distro-drive-strip {
+  margin-bottom: var(--dash-gap);
+}
+
+.glass-shell--floating .insight-strip,
+.glass-shell--floating .dashboard-grid {
+  gap: var(--dash-tile-gap);
+}
+
+.glass-shell--floating .insight-tile {
+  padding: var(--dash-tile-pad);
+}
+
+.glass-shell--floating .metric-card {
+  padding: 8px 5px 28px;
+}
+
+.glass-shell--floating .bottom-nav {
+  margin: 0 8px 8px;
+}
+
+@media (max-width: 360px) {
+  .glass-shell--floating {
+    --dash-gap: 7px;
+    --dash-tile-gap: 4px;
+  }
+
+  .glass-shell--floating .content-stack {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+
+
+/* =====================================================
+   31. PACKAGE 28 - UNIVERSAL RHYTHM NORMALIZATION
+   Shared type, spacing, padding, and line-height for the app.
+   ===================================================== */
+
+:root {
+  --type-page: 14px;
+  --type-title: 16px;
+  --type-label: 13px;
+  --type-body: 12.5px;
+  --type-small: 11px;
+  --type-micro: 10px;
+  --lh-title: 1.22;
+  --lh-label: 1.18;
+  --lh-body: 1.42;
+  --lh-tight: 1.12;
+  --ui-gap: 8px;
+  --ui-gap-sm: 6px;
+  --ui-panel-pad: 12px;
+  --ui-card-pad-y: 12px;
+  --ui-card-pad-x: 14px;
+  --ui-control-h: 42px;
+  --ui-control-pad-x: 12px;
+}
+
+body {
+  font-size: var(--type-page);
+  line-height: var(--lh-body);
+}
+
+.t-title,
+.collapsible-head .t-title {
+  font-size: var(--type-title);
+  line-height: var(--lh-title);
+  letter-spacing: 0;
+}
+
+.t-label,
+.account-row__topline,
+.pricing-row__head b,
+.toggle-row b,
+.route-manager-head b,
+.media-label {
+  font-size: var(--type-label);
+  line-height: var(--lh-label);
+  letter-spacing: 0;
+}
+
+.t-sub,
+.dashboard-hero p,
+.summary-box,
+.field-input,
+.field-select,
+.field-textarea,
+.note-item p,
+.history-list,
+.empty {
+  font-size: var(--type-body);
+  line-height: var(--lh-body);
+}
+
+.t-tiny,
+.account-row__stats,
+.account-row__meta,
+.route-manager-head small,
+.settings-row p,
+.attachment-list,
+.structured-note-meta span,
+.chip-row span {
+  font-size: var(--type-small);
+  line-height: var(--lh-tight);
+}
+
+.t-cap,
+.field-label,
+.subsection-title,
+.pricing-metrics span,
+.glass-topbar__eyebrow,
+.dashboard-hero__eyebrow,
+.hero-band__eyebrow {
+  font-size: var(--type-micro);
+  line-height: var(--lh-tight);
+  letter-spacing: 0.2px;
+  text-transform: none;
+}
+
+.today-pill {
+  text-transform: uppercase;
+}
+
+.state-pill,
+.visit-pill,
+.collapse-indicator,
+.chip-row span,
+.structured-note-meta span,
+.attachment-list span {
+  text-transform: none;
+  letter-spacing: 0.1px;
+  line-height: var(--lh-tight);
+}
+
+.content-stack {
+  gap: var(--ui-gap);
+}
+
+.glass-section,
+.card-pad,
+.form-grid--pad,
+.summary-card,
+.settings-row,
+.route-editor-row,
+.note-item,
+.activity-item,
+.timeline-item,
+.pricing-row {
+  padding: var(--ui-card-pad-y) var(--ui-card-pad-x);
+}
+
+.glass-section,
+.card,
+.account-list,
+.summary-box,
+.field-input,
+.field-select,
+.field-textarea {
+  border-radius: var(--r-card);
+}
+
+.glass-tabs {
+  gap: 4px;
+  padding: 4px;
+}
+
+.glass-tab {
+  min-height: 34px;
+  padding: 7px 8px;
+  font-size: var(--type-small);
+  line-height: var(--lh-tight);
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.btn {
+  min-height: var(--ui-control-h);
+  padding-left: 16px;
+  padding-right: 16px;
+  font-size: var(--type-label);
+  line-height: var(--lh-label);
+  letter-spacing: 0;
+}
+
+.field-label {
+  gap: 6px;
+}
+
+.field-input,
+.field-select {
+  min-height: var(--ui-control-h);
+  padding: 9px var(--ui-control-pad-x);
+}
+
+.field-textarea {
+  padding: 10px var(--ui-control-pad-x);
+}
+
+.form-grid,
+.form-grid--two,
+.settings-grid,
+.note-form,
+.account-list,
+.activity-list,
+.route-manager-list,
+.timeline-list {
+  gap: var(--ui-gap);
+}
+
+.row-spread,
+.metric-health-row,
+.account-row,
+.check-row,
+.void-row,
+.distro-row,
+.elite-row,
+.pricing-row__head,
+.pricing-metrics,
+.inline-add,
+.route-editor-row,
+.settings-row,
+.toggle-row,
+.media-grid,
+.chip-row,
+.structured-note-meta {
+  gap: var(--ui-gap);
+}
+
+.bottom-nav__label {
+  line-height: var(--lh-tight);
+  letter-spacing: 0;
+}
+
+@media (max-width: 360px) {
+  :root {
+    --type-page: 13.5px;
+    --type-title: 15px;
+    --type-label: 12.5px;
+    --type-body: 12px;
+    --type-small: 10.5px;
+    --type-micro: 9.5px;
+    --ui-gap: 7px;
+    --ui-card-pad-y: 11px;
+    --ui-card-pad-x: 12px;
+  }
+}
+
+
+/* =====================================================
+   32. PACKAGE 29 - SCOREBOARD TITLE TIGHTENING
+   Reassert compact Dashboard section spacing after global rhythm.
+   ===================================================== */
+
+.glass-shell--floating .glance-panel,
+.glass-shell--floating .scoreboard-panel {
+  padding: 8px 9px 9px;
+}
+
+.glass-shell--floating .glance-panel .section-minihead,
+.glass-shell--floating .scoreboard-panel .section-minihead {
+  margin: 0 0 6px;
+}
+
+.glass-shell--floating .glance-panel .glance-title,
+.glass-shell--floating .scoreboard-panel .glance-title {
+  line-height: 1;
+}
+
+
+/* =====================================================
+   33. PACKAGE 30 - UNIVERSAL TAB TITLE HEIGHTS
+   Match title heights across day tabs, glance tiles, and score tiles.
+   ===================================================== */
+
+.glass-shell--floating .glass-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  line-height: 1;
+}
+
+.glass-shell--floating .distro-drive-strip__head,
+.glass-shell--floating .insight-tile .t-cap,
+.glass-shell--floating .metric-card .t-cap {
+  min-height: 13px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+}
+
+.glass-shell--floating .distro-drive-strip__head {
+  justify-content: space-between;
+}
+
+.glass-shell--floating .insight-tile,
+.glass-shell--floating .metric-card {
+  align-content: start;
+}
+
+
+/* =====================================================
+   34. PACKAGE 31 - SCOREBOARD COMPACTION
+   Match title rhythm and remove wasted vertical space.
+   ===================================================== */
+
+.glass-shell--floating .scoreboard-panel {
+  padding-top: 6px;
+  padding-bottom: 7px;
+}
+
+.glass-shell--floating .scoreboard-panel .section-minihead {
+  margin: 0 0 5px;
+}
+
+.glass-shell--floating .scoreboard-panel .dashboard-grid {
+  align-items: stretch;
+}
+
+.glass-shell--floating .scoreboard-panel .metric-card {
+  min-height: 68px;
+  padding: 7px 5px 26px;
+}
+
+.glass-shell--floating .scoreboard-panel .metric-card__head {
+  margin-bottom: 0;
+}
+
+.glass-shell--floating .scoreboard-panel .metric-card__value {
+  margin-top: 2px;
+}
+
+
+/* =====================================================
+   35. PACKAGE 32 - SCOREBOARD HEADER MATCH
+   Keep panel/header spacing identical to Today at a Glance.
+   ===================================================== */
+
+.glass-shell--floating .glance-panel,
+.glass-shell--floating .scoreboard-panel {
+  padding: 8px 9px 9px;
+}
+
+.glass-shell--floating .glance-panel .section-minihead,
+.glass-shell--floating .scoreboard-panel .section-minihead {
+  margin: 0 0 6px;
+}
+
+.glass-shell--floating .glance-panel .glance-title,
+.glass-shell--floating .scoreboard-panel .glance-title {
+  line-height: 1;
+}
+
+.glass-shell--floating .scoreboard-panel .metric-card {
+  min-height: 68px;
+  padding: 7px 5px 26px;
+}
+
+.glass-shell--floating .scoreboard-panel .stepper {
+  bottom: 4px;
+  padding-top: 4px;
+}
+
+
+/* =====================================================
+   36. PACKAGE 33 - GLANCE TITLE MATCH
+   Match Today at a Glance to the scoreboard title block visually.
+   ===================================================== */
+
+.glass-shell--floating .glance-panel {
+  padding-top: 10px;
+}
+
+.glass-shell--floating .glance-panel .section-minihead {
+  margin: 0 0 7px;
+}
+
+
+/* =====================================================
+   37. PACKAGE 34 - SAFARI HEIGHT FIT
+   Compact only the locked Dashboard when mobile browser chrome
+   reduces the usable viewport height.
+   ===================================================== */
+
+@media (max-width: 520px) and (max-height: 760px) {
+  .page.page--with-hero {
+    padding-top: 50px;
+    padding-bottom: 6px;
+  }
+
+  .page--with-hero .hero-band {
+    padding: 2px 12px 8px;
+  }
+
+  .page--with-hero .hero-band__eyebrow {
+    font-size: 7.5px;
+    margin-bottom: 2px;
+  }
+
+  .page--with-hero .hero-band__title {
+    font-size: 18px;
+    margin-bottom: 0;
+  }
+
+  .page--with-hero .hero-band__sub {
+    font-size: 9.5px;
+    line-height: 1.15;
+  }
+
+  .glass-shell--floating {
+    border-radius: 24px;
+  }
+
+  .glass-shell--floating::after {
+    top: 8px;
+    height: 3px;
+  }
+
+  .glass-shell--floating .content-stack {
+    gap: 6px;
+    padding: 15px 9px 7px;
+  }
+
+  .glass-shell--floating .glass-tabs {
+    min-height: 34px;
+    border-radius: 14px;
+  }
+
+  .glass-shell--floating .glass-tab {
+    min-height: 26px;
+    padding: 4px;
+    border-radius: 10px;
+    font-size: 9px;
+  }
+
+  .glass-shell--floating .route-progress-card {
+    padding: 8px 10px 9px;
+  }
+
+  .glass-shell--floating .route-progress__head {
+    margin: -2px -1px 7px;
+    padding: 7px 9px;
+    border-radius: 12px;
+  }
+
+  .glass-shell--floating .route-progress__head .t-cap {
+    font-size: 8px;
+  }
+
+  .glass-shell--floating .route-progress__head .today-pill {
+    min-height: 24px;
+    padding: 5px 10px;
+    font-size: 9px;
+  }
+
+  .glass-shell--floating .route-progress__cockpit {
+    gap: 10px;
+    margin-bottom: 7px;
+  }
+
+  .glass-shell--floating .route-progress-card .circle-meter {
+    --size: 54px;
+    --thickness: 5px;
+  }
+
+  .glass-shell--floating .route-progress-card .circle-meter span {
+    font-size: 14px;
+  }
+
+  .glass-shell--floating .route-progress-card .circle-meter small {
+    font-size: 7px;
+  }
+
+  .glass-shell--floating .route-progress__legend {
+    gap: 4px;
+    font-size: 10px;
+  }
+
+  .glass-shell--floating .route-progress__legend span {
+    gap: 6px;
+  }
+
+  .glass-shell--floating .progress-track {
+    height: 4px;
+    margin-bottom: 7px;
+  }
+
+  .glass-shell--floating .btn--full {
+    min-height: 34px;
+    border-radius: 12px;
+    font-size: 11px;
+  }
+
+  .glass-shell--floating .glance-panel,
+  .glass-shell--floating .scoreboard-panel {
+    padding: 7px 8px 8px;
+    border-radius: 15px;
+  }
+
+  .glass-shell--floating .glance-panel {
+    padding-top: 8px;
+  }
+
+  .glass-shell--floating .section-minihead,
+  .glass-shell--floating .glance-panel .section-minihead,
+  .glass-shell--floating .scoreboard-panel .section-minihead {
+    margin: 0 0 5px;
+  }
+
+  .glass-shell--floating .glance-panel .glance-title,
+  .glass-shell--floating .scoreboard-panel .glance-title {
+    font-size: 10.5px;
+  }
+
+  .glass-shell--floating .distro-drive-strip {
+    margin-bottom: 5px;
+    padding: 6px 8px;
+    border-radius: 11px;
+  }
+
+  .glass-shell--floating .distro-drive-strip__head {
+    min-height: 11px;
+    font-size: 8.5px;
+  }
+
+  .glass-shell--floating .distro-drive-strip__head b {
+    font-size: 10.5px;
+  }
+
+  .glass-shell--floating .distro-drive-strip .progress-track {
+    height: 4px;
+    margin: 5px 0 4px;
+  }
+
+  .glass-shell--floating .distro-drive-strip__sub {
+    font-size: 7.5px;
+  }
+
+  .glass-shell--floating .insight-strip,
+  .glass-shell--floating .dashboard-grid,
+  .glass-shell--floating .scoreboard-panel .dashboard-grid {
+    gap: 4px;
+  }
+
+  .glass-shell--floating .insight-tile {
+    min-height: 58px;
+    padding: 5px 3px;
+    grid-template-rows: 10px minmax(19px, 1fr) 13px;
+    border-radius: 9px;
+  }
+
+  .glass-shell--floating .insight-tile .t-cap {
+    min-height: 10px;
+    font-size: 6.5px;
+  }
+
+  .glass-shell--floating .insight-tile__value {
+    font-size: 14px;
+    margin: 1px 0 0;
+  }
+
+  .glass-shell--floating .insight-tile .t-tiny {
+    min-height: 13px;
+    font-size: 7px;
+    line-height: 1.05;
+  }
+
+  .glass-shell--floating .scoreboard-panel .metric-card {
+    min-height: 62px;
+    padding: 6px 4px 22px;
+    border-radius: 9px;
+  }
+
+  .glass-shell--floating .scoreboard-panel .metric-card__value {
+    font-size: 15px;
+    margin-top: 0;
+  }
+
+  .glass-shell--floating .scoreboard-panel .stepper {
+    bottom: 3px;
+    padding-top: 3px;
+    gap: 3px;
+  }
+
+  .glass-shell--floating .stepper__btn {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    border-radius: 7px;
+  }
+
+  .glass-shell--floating .bottom-nav {
+    margin: 0 8px 7px;
+    padding: 6px 7px calc(6px + env(safe-area-inset-bottom, 0px));
+    border-radius: 20px;
+  }
+
+  .glass-shell--floating .bottom-nav__item {
+    min-height: 42px;
+  }
+
+  .glass-shell--floating .bottom-nav__icon {
+    width: 30px;
+    height: 22px;
+  }
+
+  .glass-shell--floating .bottom-nav__icon svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .glass-shell--floating .bottom-nav__label {
+    font-size: 7.5px;
+  }
+}
+
+
+/* =====================================================
+   38. PACKAGE 39 - CALMER BACK WINDOW
+   Reduce side shadowing and make only the back shell more
+   opaque with less blur. Inner transparent cards stay unchanged.
+   ===================================================== */
+
+body {
+  background-attachment: scroll, scroll;
+}
+
+.glass-shell--floating {
+  background: rgba(236,242,246,0.10);
+  border-color: rgba(255,255,255,0.28);
+  -webkit-backdrop-filter: blur(1.5px) saturate(108%);
+  backdrop-filter: blur(1.5px) saturate(108%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.36),
+    inset 0 -1px 0 rgba(255,255,255,0.08),
+    0 1px 2px rgba(10,14,20,0.045);
+}
+
+
+/* =====================================================
+   39. PACKAGE 48 - MAX LIQUID GLASS BLUR
+   Keep the back shell clear, but make the card-level glass
+   milkier, blurrier, and subtly textured.
+   ===================================================== */
+
+.glass-shell--floating .glass-tabs,
+.glass-shell--floating .route-progress-card,
+.glass-shell--floating .glance-panel,
+.glass-shell--floating .scoreboard-panel,
+.glass-shell--floating .accounts-tool-panel,
+.glass-shell--floating .bottom-nav {
+  position: relative;
+  overflow: hidden;
+  background: rgba(236,242,246,0.16);
+  border-color: rgba(255,255,255,0.58);
+  -webkit-backdrop-filter: blur(200px) saturate(150%);
+  backdrop-filter: blur(200px) saturate(150%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.58),
+    inset 0 -1px 0 rgba(255,255,255,0.18),
+    0 2px 7px rgba(10,14,20,0.06);
+}
+
+.glass-shell--floating .glass-tabs::before,
+.glass-shell--floating .route-progress-card::before,
+.glass-shell--floating .glance-panel::before,
+.glass-shell--floating .scoreboard-panel::before,
+.glass-shell--floating .accounts-tool-panel::before,
+.glass-shell--floating .bottom-nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+  opacity: 0.24;
+  background-image:
+    linear-gradient(135deg, rgba(255,255,255,0.32), rgba(255,255,255,0.04) 48%, rgba(255,255,255,0.16)),
+    radial-gradient(circle at 18% 16%, rgba(255,255,255,0.35), transparent 18%),
+    radial-gradient(circle at 78% 42%, rgba(255,255,255,0.18), transparent 22%),
+    repeating-radial-gradient(circle at 20% 25%, rgba(255,255,255,0.26) 0 0.45px, rgba(255,255,255,0.00) 0.8px 2.2px);
+  mix-blend-mode: screen;
+}
+
+.glass-shell--floating .glass-tabs > *,
+.glass-shell--floating .route-progress-card > *,
+.glass-shell--floating .glance-panel > *,
+.glass-shell--floating .scoreboard-panel > *,
+.glass-shell--floating .bottom-nav > * {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* =====================================================
+   40. PACKAGE 44 - FLOATING SHEET PULL TAB
+   Give the top handle a deliberate iOS sheet tab shelf instead
+   of letting it feel squeezed between the shell and day tabs.
+   ===================================================== */
+
+.glass-shell--floating::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: auto;
+  left: 0;
+  right: 0;
+  width: auto;
+  height: 34px;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.08), rgba(236,242,246,0.00));
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.32);
+}
+
+.glass-shell--floating::after {
+  top: 12px;
+  width: 34px;
+  height: 4px;
+  background: rgba(255,255,255,0.70);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.44),
+    0 1px 2px rgba(10,14,20,0.12);
+}
+
+.glass-shell--floating .content-stack {
+  padding-top: 35px;
+}
+
+@media (max-width: 520px) and (max-height: 760px) {
+  .glass-shell--floating::before {
+    height: 30px;
+  }
+
+  .glass-shell--floating::after {
+    top: 11px;
+  }
+
+  .glass-shell--floating .content-stack {
+    padding-top: 28px;
+  }
+}
+
+
+/* =====================================================
+   41. PACKAGE 46 - PC BACKGROUND SCALE + STRONGER FROST
+   Keep the portrait mountain tied to the phone-stage width so
+   desktop browsers do not crop into only the pale sky.
+   ===================================================== */
+
+body {
+  background-size: min(100vw, 460px) auto;
+  background-attachment: scroll;
+}
+
+
+/* =====================================================
+   42. PACKAGE 52 - COLORLESS FROSTED BLUR PLANE
+   Reference-driven pass: neutral translucent parent glass,
+   desaturated duplicated-background blur plate, thin rim,
+   heavy frost grain, and readable white content tiles.
+   ===================================================== */
+
+.liquid-glass-surface {
+  position: relative;
+  overflow: hidden;
+  background: var(--liquid-glass-bg);
+  -webkit-backdrop-filter: blur(var(--liquid-glass-blur)) saturate(var(--liquid-glass-saturation));
+  backdrop-filter: blur(var(--liquid-glass-blur)) saturate(var(--liquid-glass-saturation));
+  border: 1px solid var(--liquid-glass-border);
+  border-radius: var(--liquid-glass-radius);
+  box-shadow:
+    var(--liquid-glass-shadow),
+    var(--liquid-glass-inner-highlight),
+    inset 0 -1px 0 rgba(255,255,255,0.06);
+}
+
+.liquid-glass-surface::before {
+  content: "";
+  position: absolute;
+  inset: -32px;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+  opacity: 0.9;
+  background-image: var(--app-bg-image);
+  background-size: min(100vw, 460px) auto;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  filter: blur(260px) saturate(28%) brightness(1.22) contrast(0.62);
+  transform: scale(1.38);
+}
+
+.liquid-glass-surface::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: inherit;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.34), rgba(255,255,255,0.12) 42%, rgba(255,255,255,0.18)),
+    url("./assets/frost-noise.svg"),
+    rgba(248,250,252,0.30);
+  background-size: auto, 160px 160px, auto;
+  background-blend-mode: normal, screen, normal;
+}
+
+.liquid-glass-surface > * {
+  position: relative;
+  z-index: 2;
+}
+
+.page {
+  z-index: 1;
+}
+
+.glass-shell--floating .glass-tabs,
+.glass-shell--floating .route-progress-card,
+.glass-shell--floating .glance-panel,
+.glass-shell--floating .scoreboard-panel,
+.glass-shell--floating .bottom-nav {
+  position: relative;
+  overflow: hidden;
+  background: var(--liquid-glass-bg);
+  border-color: var(--liquid-glass-border);
+  -webkit-backdrop-filter: blur(var(--liquid-glass-blur)) saturate(var(--liquid-glass-saturation));
+  backdrop-filter: blur(var(--liquid-glass-blur)) saturate(var(--liquid-glass-saturation));
+  box-shadow:
+    var(--liquid-glass-shadow),
+    var(--liquid-glass-inner-highlight),
+    inset 0 -1px 0 rgba(255,255,255,0.06);
+}
+
+.glass-shell--floating .glass-tabs::before,
+.glass-shell--floating .route-progress-card::before,
+.glass-shell--floating .glance-panel::before,
+.glass-shell--floating .scoreboard-panel::before,
+.glass-shell--floating .bottom-nav::before {
+  content: "";
+  position: absolute;
+  inset: -32px;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+  opacity: 0.9;
+  background-image: var(--app-bg-image);
+  background-size: min(100vw, 460px) auto;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  filter: blur(260px) saturate(28%) brightness(1.22) contrast(0.62);
+  transform: scale(1.38);
+}
+
+.glass-shell--floating .glass-tabs::after,
+.glass-shell--floating .route-progress-card::after,
+.glass-shell--floating .glance-panel::after,
+.glass-shell--floating .scoreboard-panel::after,
+.glass-shell--floating .accounts-tool-panel::after,
+.glass-shell--floating .bottom-nav::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: inherit;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.34), rgba(255,255,255,0.12) 42%, rgba(255,255,255,0.18)),
+    url("./assets/frost-noise.svg"),
+    rgba(248,250,252,0.30);
+  background-size: auto, 160px 160px, auto;
+  background-blend-mode: normal, screen, normal;
+}
+
+.glass-shell--floating .glass-tabs > *,
+.glass-shell--floating .route-progress-card > *,
+.glass-shell--floating .glance-panel > *,
+.glass-shell--floating .scoreboard-panel > *,
+.glass-shell--floating .accounts-tool-panel > *,
+.glass-shell--floating .bottom-nav > * {
+  position: relative;
+  z-index: 2;
+}
+
+.glass-shell--floating .route-progress-card,
+.glass-shell--floating .route-progress__legend span,
+.glass-shell--floating .route-progress__legend b {
+  color: var(--ink);
+}
+
+.glass-shell--floating .route-progress__head,
+.glass-shell--floating .route-progress__head .t-cap {
+  color: var(--ink);
+}
+
+.glass-shell--floating .glass-tab {
+  color: rgba(255,255,255,0.86);
+}
+
+.glass-shell--floating .glass-tab.on {
+  color: var(--ink);
+}
+
+.glass-shell--floating .bottom-nav__item:not(.active),
+.glass-shell--floating .bottom-nav__item:not(.active) .bottom-nav__label,
+.glass-shell--floating .bottom-nav__item:not(.active) .bottom-nav__icon {
+  color: rgba(255,255,255,0.94);
+}
+
+.glass-shell--floating .bottom-nav__item.active .bottom-nav__icon {
+  background: var(--grad-amber);
+  color: #fff;
+}
+
+.glass-shell--floating .bottom-nav__item.active .bottom-nav__label {
+  color: #fff;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .liquid-glass-surface,
+  .glass-shell--floating .glass-tabs,
+  .glass-shell--floating .route-progress-card,
+  .glass-shell--floating .glance-panel,
+  .glass-shell--floating .scoreboard-panel,
+  .glass-shell--floating .accounts-tool-panel,
+  .glass-shell--floating .bottom-nav {
+    background: rgba(28,26,26,0.78);
+  }
+}
+
+.glass-shell--floating .route-progress-card,
+.glass-shell--floating .glance-panel,
+.glass-shell--floating .scoreboard-panel {
+  color: var(--ink);
+}
+
+.glass-shell--floating .glance-panel .glance-title,
+.glass-shell--floating .scoreboard-panel .glance-title {
+  color: rgba(255,255,255,0.96);
+  text-shadow: 0 1px 3px rgba(31,35,41,0.34);
+}
+
+.glass-shell--floating .glass-tab:not(.on) {
+  color: rgba(255,255,255,0.92);
+  text-shadow: 0 1px 3px rgba(31,35,41,0.28);
+}
+
+.glass-shell--floating .btn--primary,
+.glass-shell--floating .btn--full {
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(31,35,41,0.18);
+}
+
+
+/* =====================================================
+   43. PACKAGE 56 - ACCOUNTS SCREEN DASHBOARD TREATMENT
+   ===================================================== */
+
+.hero-band--accounts .hero-band__title {
+  font-size: 24px;
+}
+
+.accounts-shell .content-stack {
+  padding-bottom: 8px;
+}
+
+.accounts-shell {
+  height: calc(100dvh - 144px);
+  min-height: 0;
+}
+
+.accounts-stack {
+  min-height: 0;
+}
+
+.account-filter-tabs {
+  flex: 0 0 auto;
+}
+
+.accounts-tool-panel {
+  display: grid;
+  place-items: center;
+  gap: 6px;
+  min-height: 46px;
+  padding: 6px 8px;
+  border-radius: 18px;
+  overflow: visible;
+}
+
+.accounts-search-card {
+  width: 100%;
+  min-height: 34px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 9px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.94);
+  border: 1px solid rgba(255,255,255,0.72);
+  box-shadow: 0 1px 4px rgba(31,35,41,0.08);
+}
+
+.accounts-search-icon {
+  width: 14px;
+  height: 14px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  color: var(--ember);
+}
+
+.accounts-search-icon svg,
+.accounts-sort-control svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.accounts-search-input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 9.5px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.accounts-search-input::placeholder {
+  color: var(--storm);
+  opacity: 0.7;
+}
+
+.accounts-control-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  padding: 0 4px;
+  flex: 0 0 auto;
+}
+
+.accounts-sort-control {
+  min-height: 34px;
+  border-radius: 11px;
+  background: rgba(255,255,255,0.38);
+  border: 1px solid rgba(255,255,255,0.52);
+  color: var(--ink);
+  -webkit-backdrop-filter: blur(26px) saturate(120%);
+  backdrop-filter: blur(26px) saturate(120%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.44);
+}
+
+.accounts-sort-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+}
+
+.accounts-sort-control span {
+  width: 14px;
+  height: 14px;
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.accounts-sort-control select {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 9.5px;
+  font-weight: 800;
+}
+
+.accounts-shell .account-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: none;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.96);
+  border: 1px solid rgba(255,255,255,0.72);
+  box-shadow: 0 6px 18px rgba(10,14,20,0.14);
+}
+
+.accounts-shell .account-list::-webkit-scrollbar {
+  display: none;
+}
+
+.accounts-shell .account-row {
+  min-height: 76px;
+  padding: 11px 12px;
+  gap: 10px;
+}
+
+.accounts-shell .account-row__dot {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  font-size: 13px;
+  color: #fff;
+  background: rgba(5,7,10,0.82);
+  border-color: rgba(255,255,255,0.58);
+}
+
+.accounts-shell .account-row__topline .t-label {
+  font-size: 11.5px;
+  max-width: 128px;
+}
+
+.account-score {
+  min-width: 30px;
+  height: 18px;
+  padding: 0 7px;
+  border-radius: var(--r-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: 0 2px 7px rgba(10,14,20,0.14);
+}
+
+.account-score--good { background: #22c55e; }
+.account-score--warn { background: var(--amber-dark); }
+.account-score--bad { background: #ef4444; }
+
+.accounts-shell .account-row__stats {
+  gap: 9px;
+  font-size: 9px;
+  line-height: 1.15;
+}
+
+.accounts-shell .account-row__stats span {
+  white-space: nowrap;
+}
+
+.accounts-shell .account-row__stats .stat-good {
+  color: var(--good);
+}
+
+.accounts-shell .account-row__stats .stat-warn {
+  color: var(--ember);
+}
+
+.accounts-shell .account-row__meta {
+  gap: 8px;
+  font-size: 9.5px;
+}
+
+.accounts-shell .visit-pill {
+  color: var(--ember);
+  background: rgba(255,176,32,0.12);
+  border-color: rgba(255,176,32,0.30);
+}
+
+.accounts-next-stop {
+  flex: 0 0 auto;
+  width: auto;
+  margin: 8px 14px 8px;
+  min-height: 48px;
+  border-radius: 14px;
+}
+
+@media (max-width: 360px) {
+  .accounts-shell .account-row__topline .t-label {
+    max-width: 108px;
+  }
+
+  .accounts-shell .account-row__stats {
+    gap: 8px;
+  }
+}
+
+@media (max-height: 760px) {
+  .accounts-shell {
+    height: calc(100dvh - 126px);
+  }
+}
+
+
+/* =====================================================
+   44. PACKAGE 60 - ACCOUNT LANDING SCREEN
+   Bring tapped-account landing onto the Dashboard/Accounts
+   hero + floating glass shell pattern.
+   ===================================================== */
+
+.hero-band--account {
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 42px;
+  align-items: center;
+  gap: 10px;
+  padding: 24px 20px 14px;
+}
+
+.hero-band--account .hero-band__title {
+  max-width: 100%;
+  font-size: 21px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hero-band--account .hero-band__sub {
+  max-width: 100%;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.account-hero-back {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 13px;
+  border: 1px solid rgba(255,255,255,0.46);
+  background: rgba(255,255,255,0.14);
+  color: #fff;
+  -webkit-backdrop-filter: blur(28px) saturate(130%);
+  backdrop-filter: blur(28px) saturate(130%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.44);
+  cursor: pointer;
+}
+
+.account-hero-back svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.account-hero__copy {
+  min-width: 0;
+  text-align: center;
+}
+
+.account-hero-visit {
+  min-width: 112px;
+  min-height: 29px;
+  margin-top: 7px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--grad-amber);
+  color: #fff;
+  font: inherit;
+  font-size: 10.5px;
+  font-weight: 900;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(31,35,41,0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.45),
+    0 3px 10px rgba(243,138,46,0.28);
+  cursor: pointer;
+}
+
+.account-hero-visit.is-done {
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.44);
+  color: #fff;
+  -webkit-backdrop-filter: blur(22px) saturate(130%);
+  backdrop-filter: blur(22px) saturate(130%);
+}
+
+.account-hero-score {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  gap: 0;
+  padding: 5px 0 4px;
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.36),
+    0 4px 14px rgba(10,14,20,0.16);
+}
+
+.account-hero-score b {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.account-hero-score span {
+  font-size: 9px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.account-hero-score--good { background: #22c55e; }
+.account-hero-score--warn { background: var(--grad-amber); }
+.account-hero-score--bad { background: #ef4444; }
+
+.account-shell {
+  flex: 0 0 auto;
+  height: calc(100dvh - 162px);
+  min-height: 0;
+}
+
+.account-stack {
+  min-height: 0;
+  gap: 9px;
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-bottom: 8px;
+}
+
+.account-shell .account-tabs {
+  position: relative;
+  top: auto;
+  z-index: 2;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  background: var(--liquid-glass-bg);
+  flex: 0 0 auto;
+}
+
+.account-tab-panel {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.account-tab-panel > * {
+  flex: 0 0 auto;
+}
+
+.account-tab-panel::-webkit-scrollbar {
+  display: none;
+}
+
+.account-glance-panel {
+  padding: 9px;
+  color: var(--ink);
+}
+
+.account-glance-panel .section-minihead {
+  justify-content: center;
+  margin-bottom: 7px;
+  text-align: center;
+}
+
+.account-glance-panel .glance-title {
+  color: rgba(255,255,255,0.96);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.account-distro-strip {
+  margin-bottom: 7px;
+}
+
+.account-insight-strip {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.account-insight-strip .insight-tile {
+  min-height: 68px;
+  padding: 8px 3px 7px;
+}
+
+.account-insight-strip .insight-tile__value {
+  font-size: 16px;
+  letter-spacing: -0.2px;
+}
+
+.account-shell .card {
+  background: rgba(255,255,255,0.96);
+  border-color: rgba(255,255,255,0.80);
+  box-shadow: 0 4px 14px rgba(10,14,20,0.10);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.account-shell .account-section-card {
+  padding: 9px;
+  background: var(--liquid-glass-bg);
+  border-color: var(--liquid-glass-border);
+  -webkit-backdrop-filter: blur(var(--liquid-glass-blur)) saturate(var(--liquid-glass-saturation));
+  backdrop-filter: blur(var(--liquid-glass-blur)) saturate(var(--liquid-glass-saturation));
+  box-shadow:
+    var(--liquid-glass-shadow),
+    var(--liquid-glass-inner-highlight),
+    inset 0 -1px 0 rgba(255,255,255,0.06);
+}
+
+.account-shell .section-header {
+  min-height: 42px;
+  padding: 10px 12px;
+}
+
+.account-shell .account-section-card .section-header {
+  min-height: 38px;
+  margin: 0 0 8px;
+  padding: 8px 10px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(255,255,255,0.88);
+  border-radius: 13px;
+  background: rgba(255,255,255,0.96);
+  box-shadow: 0 2px 7px rgba(10,14,20,0.08);
+}
+
+.account-shell .account-section-card--static .section-header {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.account-shell .section-header .t-cap,
+.account-shell .subsection-title {
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.15px;
+  text-transform: none;
+}
+
+.account-shell .account-section-card .section-header .t-cap {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  line-height: 1.1;
+}
+
+.account-shell .account-section-card .link-btn {
+  min-height: 26px;
+  padding: 0 8px;
+  max-width: 64px;
+  flex: 0 0 auto;
+  border-radius: var(--r-pill);
+  background: rgba(255,176,32,0.10);
+  border: 1px solid rgba(255,176,32,0.24);
+  color: var(--ember);
+  font-size: 9.5px;
+  font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.account-shell .check-row {
+  min-height: 42px;
+  padding: 9px 12px;
+  justify-content: space-between;
+  color: var(--ink);
+  font-size: 11.5px;
+  font-weight: 750;
+}
+
+.account-section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.account-section-card.is-collapsed .section-header {
+  margin-bottom: 0;
+}
+
+.account-shell .account-section-card .check-row,
+.account-shell .account-section-card .work-row,
+.account-shell .account-section-card .void-row {
+  margin: 0;
+  border: 1px solid rgba(255,255,255,0.72);
+  border-radius: 11px;
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 1px 4px rgba(10,14,20,0.06);
+}
+
+.account-shell .account-section-card .work-row {
+  align-items: center;
+  overflow: hidden;
+}
+
+.account-shell .account-section-card .void-row {
+  align-items: center;
+  overflow: hidden;
+}
+
+.account-shell .account-section-card .work-row__button,
+.account-shell .account-section-card .work-row__body {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.account-shell .account-section-card .work-row__body b,
+.account-shell .account-section-card .work-row__body span {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-shell .account-section-card .work-row > .state-pill {
+  flex: 0 0 auto;
+}
+
+.account-shell .account-section-card .void-row__sku {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11.5px;
+  line-height: 1.2;
+}
+
+.account-shell .account-section-card .void-row > .state-pill {
+  flex: 0 0 auto;
+}
+
+.account-shell .check-row > span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-shell .check-state {
+  width: auto;
+  min-width: 48px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: var(--r-pill);
+  border-width: 1px;
+  background: rgba(255,176,32,0.12);
+  border-color: rgba(255,176,32,0.28);
+  color: var(--ember);
+  font-size: 9px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.account-shell .account-section-card .state-pill {
+  min-height: 24px;
+  padding: 0 8px;
+  border-radius: var(--r-pill);
+  font-size: 9.5px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.account-shell .account-section-card .work-row__body b {
+  font-size: 11.5px;
+  line-height: 1.2;
+  font-weight: 900;
+}
+
+.account-shell .account-section-card .work-row__body span {
+  font-size: 10px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--ash);
+}
+
+.account-shell .account-section-card .field-label {
+  font-size: 9.5px;
+  line-height: 1.1;
+  letter-spacing: 0.15px;
+  text-transform: none;
+}
+
+.account-shell .account-section-card .field-input,
+.account-shell .account-section-card .field-textarea {
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.account-shell .account-section-card .account-section-body > .field-textarea,
+.account-shell .account-section-card .account-section-body > .field-label,
+.account-shell .account-section-card .account-section-body > .media-actions,
+.account-shell .account-section-card .account-section-body > .attachment-list,
+.account-shell .account-section-card .account-section-body > .t-sub,
+.account-shell .account-section-card .account-section-body > .import-preview,
+.account-shell .account-section-card .account-section-body > input.field-input,
+.account-shell .account-section-card .note-meta-grid,
+.account-shell .account-section-card .settings-grid,
+.account-shell .account-section-card .toggle-row,
+.account-shell .account-section-card .summary-box,
+.account-shell .account-section-card .summary-snapshot,
+.account-shell .account-section-card .activity-row,
+.account-shell .account-section-card .route-editor-control,
+.account-shell .account-section-card .route-manager-row,
+.account-shell .account-section-card .note-item,
+.account-shell .account-section-card .void-bucket-list {
+  margin: 0;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,0.72);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 1px 4px rgba(10,14,20,0.06);
+}
+
+.account-shell .account-section-card .account-section-body > .field-label {
+  display: grid;
+  gap: 5px;
+}
+
+.account-shell .account-section-card .settings-grid,
+.account-shell .account-section-card .note-meta-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.account-shell .account-section-card .toggle-row {
+  border-bottom: 0;
+}
+
+.account-shell .account-section-card .summary-box {
+  min-height: 132px;
+  resize: none;
+}
+
+.account-shell .account-section-card .summary-box--short {
+  min-height: 88px;
+}
+
+.account-shell .account-section-card .activity-row,
+.account-shell .account-section-card .summary-snapshot {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.account-shell .account-section-card .activity-row b,
+.account-shell .account-section-card .activity-row span,
+.account-shell .account-section-card .summary-snapshot b,
+.account-shell .account-section-card .summary-snapshot p {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.account-shell .account-section-card .summary-snapshot p {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.account-shell .account-section-card .route-editor-control {
+  padding: 8px;
+}
+
+.account-shell .account-section-card .route-manager-row {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.account-shell .account-section-card .account-section-body > .media-actions {
+  padding: 8px;
+  gap: 8px;
+}
+
+.account-shell .account-section-card .media-action {
+  min-height: 52px;
+  gap: 4px;
+  border-radius: 12px;
+  background: var(--frost);
+}
+
+.account-shell .account-section-card .media-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.account-shell .account-section-card .media-label {
+  font-size: 11px;
+  line-height: 1.1;
+  font-weight: 850;
+}
+
+.account-shell .account-section-card .note-meta-grid .field-label {
+  margin-bottom: 0;
+}
+
+.account-shell .account-section-card .note-meta-grid .field-input {
+  min-height: 36px;
+}
+
+.account-shell .account-section-card textarea[data-action="note-body"] {
+  min-height: 70px;
+  resize: none;
+}
+
+.account-shell .account-section-card .account-section-body > .btn--full {
+  flex: 0 0 auto;
+}
+
+.account-shell .account-section-card .void-bucket-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.account-shell .account-section-card .subsection-title {
+  padding: 0 2px;
+  font-size: 10px;
+  line-height: 1.1;
+}
+
+.account-shell .account-section-card .note-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: var(--ink);
+}
+
+.account-shell .account-section-card .note-item p {
+  margin: 0;
+  color: var(--ash);
+  font-size: 11.5px;
+  line-height: 1.3;
+}
+
+.account-shell .account-section-card .note-item .row-spread {
+  gap: 8px;
+  min-width: 0;
+}
+
+.account-shell .account-section-card .note-item .row-spread b,
+.account-shell .account-section-card .note-item .row-spread span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-shell .check-state.done {
+  background: var(--good-soft);
+  border-color: rgba(34,197,94,0.26);
+  color: var(--good);
+}
+
+.account-shell .check-state svg {
+  width: 12px;
+  height: 12px;
+}
+
+.account-shell .work-row,
+.account-shell .void-row,
+.account-shell .pricing-row {
+  padding: 9px 12px;
+}
+
+.account-shell .account-section-card .inline-add,
+.account-shell .account-section-card .form-grid--pad {
+  margin: 0;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,0.72);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 1px 4px rgba(10,14,20,0.06);
+}
+
+.account-shell .account-section-card .inline-add {
+  border-top: 1px solid rgba(255,255,255,0.72);
+}
+
+.account-shell .account-section-card .account-add-cta {
+  width: 100%;
+  min-height: 40px;
+  margin-top: 2px;
+  border-radius: 13px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.account-shell .account-section-card .account-form-cancel {
+  align-self: center;
+  min-height: 28px;
+  padding: 0 10px;
+}
+
+.account-shell .account-section-card .empty {
+  margin: 0;
+  border-radius: 11px;
+  background: rgba(255,255,255,0.86);
+}
+
+.account-shell .btn--full {
+  min-height: 42px;
+  border-radius: 13px;
+}
+
+.glass-shell--floating .scoreboard-panel .stepper__btn {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  border-radius: 8px;
+}
+
+.utility-shell {
+  min-height: 0;
+}
+
+.utility-shell .account-stack {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  padding-bottom: 16px;
+  scrollbar-width: none;
+}
+
+.utility-shell .account-stack::-webkit-scrollbar {
+  display: none;
+}
+
+.utility-shell .account-section-card,
+.utility-shell .account-stack > .btn {
+  flex: 0 0 auto;
+}
+
+.utility-shell .account-section-card:not(.is-collapsed) {
+  display: flex;
+  flex-direction: column;
+  max-height: min(520px, calc(100dvh - 258px));
+  min-height: 0;
+  overflow: hidden;
+}
+
+.utility-shell .account-section-card:not(.is-collapsed) .account-section-body {
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  padding-right: 1px;
+  scrollbar-width: none;
+}
+
+.utility-shell .account-section-card:not(.is-collapsed) .account-section-body::-webkit-scrollbar {
+  display: none;
+}
+
+body.dark-mode .route-progress__head,
+body.dark-mode .glass-shell--floating .route-progress__head,
+body.dark-mode .metric-card,
+body.dark-mode .distro-drive-strip,
+body.dark-mode .account-row,
+body.dark-mode .accounts-search-card,
+body.dark-mode .account-shell .card,
+body.dark-mode .account-shell .account-section-card .section-header,
+body.dark-mode .account-shell .account-section-card .check-row,
+body.dark-mode .account-shell .account-section-card .work-row,
+body.dark-mode .account-shell .account-section-card .void-row,
+body.dark-mode .account-shell .account-section-card .inline-add,
+body.dark-mode .account-shell .account-section-card .form-grid--pad,
+body.dark-mode .account-shell .account-section-card .empty,
+body.dark-mode .account-shell .account-section-card .account-section-body > .field-textarea,
+body.dark-mode .account-shell .account-section-card .account-section-body > .field-label,
+body.dark-mode .account-shell .account-section-card .account-section-body > .media-actions,
+body.dark-mode .account-shell .account-section-card .account-section-body > .attachment-list,
+body.dark-mode .account-shell .account-section-card .account-section-body > .t-sub,
+body.dark-mode .account-shell .account-section-card .account-section-body > .import-preview,
+body.dark-mode .account-shell .account-section-card .account-section-body > input.field-input,
+body.dark-mode .account-shell .account-section-card .note-meta-grid,
+body.dark-mode .account-shell .account-section-card .settings-grid,
+body.dark-mode .account-shell .account-section-card .toggle-row,
+body.dark-mode .account-shell .account-section-card .summary-box,
+body.dark-mode .account-shell .account-section-card .summary-snapshot,
+body.dark-mode .account-shell .account-section-card .activity-row,
+body.dark-mode .account-shell .account-section-card .route-editor-control,
+body.dark-mode .account-shell .account-section-card .route-manager-row,
+body.dark-mode .account-shell .account-section-card .note-item,
+body.dark-mode .account-shell .account-section-card .void-bucket-list {
+  color: var(--ink);
+}
+
+body.dark-mode .field-input::placeholder,
+body.dark-mode .field-textarea::placeholder {
+  color: var(--fog);
+}
+
+body.dark-mode .account-shell .account-section-card .work-row__body span,
+body.dark-mode .account-shell .account-section-card .note-item p,
+body.dark-mode .account-shell .account-section-card .summary-snapshot p,
+body.dark-mode .account-shell .account-section-card .activity-row span,
+body.dark-mode .account-shell .account-section-card .t-sub,
+body.dark-mode .account-shell .account-section-card .t-tiny,
+body.dark-mode .account-shell .account-section-card .toggle-row small {
+  color: var(--ash);
+}
+
+/* True dark mode: black cards/tabs with white outlines and white type. */
+body.dark-mode .glass-shell--floating {
+  background: rgba(5,7,10,0.50);
+  border-color: rgba(255,255,255,0.58);
+  color: #fff;
+}
+
+body.dark-mode .glass-shell--floating .content-stack {
+  color: #fff;
+}
+
+body.dark-mode .glass-section,
+body.dark-mode .card,
+body.dark-mode .glass-shell--floating .card,
+body.dark-mode .glass-shell--floating .glass-tabs,
+body.dark-mode .glass-shell--floating .route-progress-card,
+body.dark-mode .glass-shell--floating .route-progress__head,
+body.dark-mode .glass-shell--floating .glance-panel,
+body.dark-mode .glass-shell--floating .scoreboard-panel,
+body.dark-mode .glass-shell--floating .accounts-tool-panel,
+body.dark-mode .accounts-search-card,
+body.dark-mode .account-list,
+body.dark-mode .account-row,
+body.dark-mode .metric-card,
+body.dark-mode .distro-drive-strip,
+body.dark-mode .account-shell .account-tabs,
+body.dark-mode .account-shell .account-section-card,
+body.dark-mode .account-shell .account-section-card .section-header,
+body.dark-mode .account-shell .account-section-card .check-row,
+body.dark-mode .account-shell .account-section-card .work-row,
+body.dark-mode .account-shell .account-section-card .void-row,
+body.dark-mode .account-shell .account-section-card .inline-add,
+body.dark-mode .account-shell .account-section-card .form-grid--pad,
+body.dark-mode .account-shell .account-section-card .empty,
+body.dark-mode .account-shell .account-section-card .account-section-body > .field-textarea,
+body.dark-mode .account-shell .account-section-card .account-section-body > .field-label,
+body.dark-mode .account-shell .account-section-card .account-section-body > .media-actions,
+body.dark-mode .account-shell .account-section-card .account-section-body > .attachment-list,
+body.dark-mode .account-shell .account-section-card .account-section-body > .t-sub,
+body.dark-mode .account-shell .account-section-card .account-section-body > .import-preview,
+body.dark-mode .account-shell .account-section-card .account-section-body > input.field-input,
+body.dark-mode .account-shell .account-section-card .note-meta-grid,
+body.dark-mode .account-shell .account-section-card .settings-grid,
+body.dark-mode .account-shell .account-section-card .toggle-row,
+body.dark-mode .account-shell .account-section-card .summary-box,
+body.dark-mode .account-shell .account-section-card .summary-snapshot,
+body.dark-mode .account-shell .account-section-card .activity-row,
+body.dark-mode .account-shell .account-section-card .route-editor-control,
+body.dark-mode .account-shell .account-section-card .route-manager-row,
+body.dark-mode .account-shell .account-section-card .note-item,
+body.dark-mode .account-shell .account-section-card .void-bucket-list,
+body.dark-mode .account-shell .account-section-card .media-action {
+  background: rgba(5,7,10,0.86);
+  border-color: rgba(255,255,255,0.58);
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    0 1px 8px rgba(0,0,0,0.22);
+}
+
+body.dark-mode .bottom-nav {
+  background: rgba(5,7,10,0.82);
+  border-color: rgba(255,255,255,0.58);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    0 -2px 14px rgba(0,0,0,0.26);
+}
+
+body.dark-mode .glass-tab,
+body.dark-mode .bottom-nav__item,
+body.dark-mode .bottom-nav__icon,
+body.dark-mode .account-shell .account-section-card .link-btn,
+body.dark-mode .stepper__btn,
+body.dark-mode .btn--ghost,
+body.dark-mode .field-input,
+body.dark-mode .field-select,
+body.dark-mode .field-textarea,
+body.dark-mode .summary-box {
+  background: rgba(5,7,10,0.82);
+  border: 1px solid rgba(255,255,255,0.58);
+  color: #fff;
+}
+
+body.dark-mode .glass-tab.on,
+body.dark-mode .bottom-nav__item.active .bottom-nav__icon,
+body.dark-mode .account-shell .account-section-card .link-btn,
+body.dark-mode .today-pill {
+  background: rgba(5,7,10,0.92);
+  border-color: rgba(255,176,32,0.86);
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    0 0 0 1px rgba(255,176,32,0.28),
+    0 4px 14px rgba(0,0,0,0.26);
+}
+
+body.dark-mode .btn--primary,
+body.dark-mode .glass-shell--floating .btn--primary {
+  background: var(--grad-amber);
+  border-color: rgba(255,255,255,0.48);
+  color: #05070A;
+}
+
+body.dark-mode .bottom-nav__label,
+body.dark-mode .bottom-nav__item.active .bottom-nav__label,
+body.dark-mode .bottom-nav__icon,
+body.dark-mode .t-cap,
+body.dark-mode .t-label,
+body.dark-mode .t-title,
+body.dark-mode .t-sub,
+body.dark-mode .t-tiny,
+body.dark-mode .field-label,
+body.dark-mode .summary-snapshot p,
+body.dark-mode .activity-row span,
+body.dark-mode .account-row__name,
+body.dark-mode .account-row__meta,
+body.dark-mode .account-row__stats b,
+body.dark-mode .account-shell .account-section-card .work-row__body b,
+body.dark-mode .account-shell .account-section-card .work-row__body span,
+body.dark-mode .account-shell .account-section-card .note-item p,
+body.dark-mode .account-shell .account-section-card .toggle-row small,
+body.dark-mode .route-progress__legend,
+body.dark-mode .metric-card .t-tiny {
+  color: #fff;
+}
+
+body.dark-mode .field-input::placeholder,
+body.dark-mode .field-textarea::placeholder {
+  color: rgba(255,255,255,0.62);
+}
+
+body.dark-mode .progress-track {
+  background: rgba(255,255,255,0.22);
+}
+
+body.dark-mode .route-progress__head,
+body.dark-mode .route-progress__legend,
+body.dark-mode .route-progress__legend b,
+body.dark-mode .route-progress-card .circle-meter span,
+body.dark-mode .route-progress-card .circle-meter small {
+  color: #fff;
+}
+
+body.dark-mode .circle-meter::before {
+  background: rgba(5,7,10,0.92);
+  border: 1px solid rgba(255,255,255,0.32);
+}
+
+.undo-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  z-index: 1000;
+  width: min(342px, calc(100vw - 28px));
+  min-height: 52px;
+  padding: 8px 8px 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.58);
+  background: rgba(5,7,10,0.88);
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    0 14px 38px rgba(0,0,0,0.34);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  backdrop-filter: blur(22px) saturate(150%);
+  transform: translate(-50%, 18px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.undo-toast.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+
+.undo-toast__text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 850;
+  line-height: 1.1;
+}
+
+.undo-toast__button {
+  flex: 0 0 auto;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: var(--r-pill);
+  border: 1px solid rgba(255,176,32,0.82);
+  background: var(--grad-amber);
+  color: #05070A;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+@media (max-width: 360px) {
+  .hero-band--account {
+    grid-template-columns: 32px minmax(0, 1fr) 38px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .account-hero-score {
+    width: 38px;
+    height: 38px;
+  }
+
+  .account-insight-strip {
+    gap: 4px;
+  }
+
+  .account-insight-strip .insight-tile__value {
+    font-size: 14px;
+  }
+}
+
+@media (max-height: 760px) {
+  .hero-band--account {
+    padding-top: 18px;
+    padding-bottom: 10px;
+  }
+
+  .hero-band--account .hero-band__title {
+    font-size: 19px;
+  }
+
+  .account-shell {
+    height: calc(100dvh - 138px);
+  }
+
+  .account-stack {
+    gap: 7px;
+  }
+}

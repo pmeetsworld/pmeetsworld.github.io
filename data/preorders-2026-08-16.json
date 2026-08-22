@@ -1,0 +1,147 @@
+{
+  "type": "preorders",
+  "period": "August 2026",
+  "sourceDate": "2026-08-16",
+  "items": [
+    {
+      "itemNumber": "11489",
+      "name": "Bum Energy Ella Langley 12 pack 12oz Cans",
+      "objective": "Launch Core",
+      "priority": "3 - Medium",
+      "status": "Pre-order",
+      "goal": 800,
+      "actual": 88,
+      "deadline": "2026-08-18",
+      "launchDate": "2026-08-25",
+      "currentInventory": 0
+    },
+    {
+      "itemNumber": "11581",
+      "name": "Infusion Pickle Slam Lager 4/6 pack 12oz Cans",
+      "objective": "Launch Core",
+      "priority": "3 - Medium",
+      "status": "Pre-order",
+      "goal": 275,
+      "actual": 266,
+      "deadline": "2026-08-21",
+      "launchDate": "2026-09-07",
+      "currentInventory": 0
+    },
+    {
+      "itemNumber": "3288",
+      "name": "Glacial Till Caramel Apple 1/6 Bbl",
+      "objective": "Deplete - LTO",
+      "priority": "3 - Medium",
+      "status": "Pre-order",
+      "goal": 40,
+      "actual": 30,
+      "deadline": "2026-08-27",
+      "launchDate": "2026-09-01",
+      "currentInventory": 0
+    },
+    {
+      "itemNumber": "2084",
+      "name": "Glacial Till Caramel Apple 4/6/12oz Cans",
+      "objective": "Deplete - LTO",
+      "priority": "2 - High",
+      "status": "Pre-order",
+      "goal": 1400,
+      "actual": 436,
+      "deadline": "2026-08-27",
+      "launchDate": "2026-09-01",
+      "currentInventory": 0
+    },
+    {
+      "itemNumber": "10267",
+      "name": "Modelo Noche Especial 4/6 pack 12oz Bottles",
+      "objective": "Deplete - LTO",
+      "priority": "4 - Low",
+      "status": "Pre-order",
+      "goal": 784,
+      "actual": 12,
+      "deadline": "2026-08-31",
+      "launchDate": "2026-11-10",
+      "currentInventory": 0
+    },
+    {
+      "itemNumber": "83870",
+      "name": "Shock Top Twisted Pretzel 1/6 Barrel Keg",
+      "objective": "Deplete - LTO",
+      "priority": "3 - Medium",
+      "status": "Pre-order",
+      "goal": 10,
+      "actual": 3,
+      "deadline": "2026-09-03",
+      "launchDate": "2026-10-20",
+      "currentInventory": 0
+    },
+    {
+      "itemNumber": "8379",
+      "name": "Shock Top Twisted Pretzel 4/6 12oz Bottles",
+      "objective": "Deplete - LTO",
+      "priority": "3 - Medium",
+      "status": "Pre-order",
+      "goal": 300,
+      "actual": 162,
+      "deadline": "2026-09-03",
+      "launchDate": "2026-10-20",
+      "currentInventory": 0
+    },
+    {
+      "itemNumber": "10121",
+      "name": "Shiner Holiday Cheer 4/6 pack 12oz Bottles",
+      "objective": "Deplete - LTO",
+      "priority": "3 - Medium",
+      "status": "Pre-order",
+      "goal": 2000,
+      "actual": 115,
+      "deadline": "2026-09-08",
+      "launchDate": "2026-10-19",
+      "currentInventory": 0
+    },
+    {
+      "itemNumber": "10148",
+      "name": "Shiner Holiday Cheer 1/4 Barrel",
+      "objective": "Deplete - LTO",
+      "priority": "3 - Medium",
+      "status": "Pre-order",
+      "goal": 20,
+      "actual": 11,
+      "deadline": "2026-09-08",
+      "launchDate": "2026-10-19",
+      "currentInventory": 0
+    },
+    {
+      "itemNumber": "10124",
+      "name": "Shiner Home for the Holidays 2/12 pack 12oz Bottles",
+      "objective": "Deplete - LTO",
+      "priority": "3 - Medium",
+      "status": "Pre-order",
+      "goal": 1000,
+      "actual": 144,
+      "deadline": "2026-09-08",
+      "launchDate": "2026-10-19",
+      "currentInventory": 0
+    },
+    {
+      "itemNumber": "11735",
+      "name": "Bloom Energy Pear Scare 12 pack 12oz Cans",
+      "objective": "PreOrder",
+      "priority": "1 - Urgent",
+      "status": "Pre-order",
+      "goal": 0,
+      "actual": 250,
+      "currentInventory": 0
+    },
+    {
+      "itemNumber": "18511",
+      "name": "Glacial Till Hibiscus Ginger 1/6 Bbl",
+      "objective": "Launch Core",
+      "priority": "3 - Medium",
+      "status": "Pre-order",
+      "goal": 0,
+      "actual": 3,
+      "currentInventory": 0
+    }
+  ]
+}

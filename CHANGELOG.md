@@ -1,259 +1,133 @@
-# Alpenglow v0.10 Changelog
+# Changelog
 
-Last updated: 2026-05-11
+## Data refresh - 2026-08-22
 
-Source of truth:
+- Added dated Elite assignments, preorder, and PFP scorecard snapshots from the August 22 source captures.
+- Updated preorder goals and actuals for 17 item-number keyed products.
+- Updated all six PFP volume buckets and validated execution to 5 of 78 objectives.
+- Retained stable Elite assignment identities and documented the source screenshot's hidden-completion limitation instead of inventing unseen rows.
 
-`C:\Users\xyzas\Documents\Codex\2026-05-03\files-mentioned-by-the-user-route\Alpenglow v0.10`
+## 1.1.0 - 2026-08-16
 
-Do not assume the OneDrive copy is current.
+- Added live PFP projection from exact campaign-matched local Elite completions, with source/local attribution and remaining potential kept separate from committed pay.
+- Added report-confirmed Independent/Chain hierarchy for route-performance filtering while preserving specialized DSD and On-Premise field classifications.
+- Added "Not suitable for account" as a protected per-account preorder response.
+- Daily summaries now keep only each opportunity's final status for the day.
+- Added a compact Gains/Declines switch to Customer Movers and centered the Route Health legend.
+- Added "On Shelf" as a resolved opportunity state, with legacy "Already in Account" normalization.
+- PFP volume bars now show the 70% payout gate; campaign rows use a clearer bounded scroll list.
+- Upgraded the account Price Book with a shared SKU catalog, automatic unit/margin math, optional 2-for pricing, and account-specific retail values.
+- Added attachment deletion with undo, fixed same-day compliance counting, and removed the nested Elite objective scroller so checklist position is retained.
+- Normalized legacy "No Fit" opportunity states to "Not in Set" and corrected Route Health calendar selection and weekend contrast.
+- Added a protected execution layer for Elite assignments and account-specific completion states.
+- Added a global preorder catalog with per-account buyer responses, quantities, and notes.
+- Added the PFP v1 payout engine, August scorecard, volume gates, execution pace, and estimated-pay views.
+- Added distinct Account Performance, Segment Performance, and Customer Movers imports with truthful MTD/YTD controls.
+- Added the Perfect Launch catalog CSV as product-level context without inventing account or item-number links.
+- Added an optional August execution pack that stages supplied source data without seeding a clean install.
+- Advanced storage migrations to schema 3 while preserving report/field isolation and undo behavior.
+- Versioned the complete JavaScript module graph so installed PWAs cannot mix old and new modules during an update.
+- Brought Route Health calendar controls to a true 44px minimum target at iPhone 15 Pro width.
+- Reordered Activity so daily follow-ups stay with the daily summary instead of below long-form analytics.
+- Collapsed detailed PFP calculations, route and account performance, and import-format guidance behind compact summaries.
+- Revised the offline-shell cache so the final layout audit reaches already-open previews and installed PWAs cleanly.
 
-## Current Build
+## 1.0.13 - 2026-07-30
 
-- App name: Route 508 - Alpenglow v0.10
-- Runtime: static offline-first PWA for GitHub Pages
-- Current cache: `r508-alpenglow-v0-10-package-72-account-task-ctas`
-- Current background: `assets/dark-liquid-bg.jpg`
-- Current visual direction: iOS-style Liquid Glass shell, dark liquid background, amber action color, true dark mode option.
-- Current seed refresh: 2026-05-11 local files, with On-Prem Distro Drive only because Off-Prem is complete.
-- Historical docs, QA screenshots, and old CSS backups have been pruned from the root and moved to `archive\`.
+- Propagated the release key through the performance screen module graph so the MTD/YTD source-state control cannot be hidden by a stale imported module.
+- Replaced search-agnostic cache matching with exact asset versions and a one-time release loader that refreshes when a new offline worker takes control.
 
-## Runtime Surface
+## 1.0.12 - 2026-07-30
 
-- Dashboard-first startup.
-- Bottom navigation: Dashboard, Accounts, Activity, More.
-- Accounts route list with day/filter/search/sort controls.
-- Account landing page with Today, Details, Notes tabs.
-- Activity page with daily summary, weekly 1-on-1 prep, summary archive, activity log.
-- More page with Settings, Structured Notes shortcut, Route Editor, Legacy v0.6 import, Backups.
-- Local storage app state.
-- IndexedDB media helper for note attachments.
-- Quick JSON and Full ZIP backup affordances.
-- Legacy v0.6 JSON import.
-- Undo toast for meaningful mutations.
+- Versioned first-party entry assets so browser and installed-PWA refreshes reliably load the current UI instead of a stale JavaScript module graph.
 
-## Data Model Notes
+## 1.0.11 - 2026-07-30
 
-- Account number is the unique account identifier.
-- Chain accounts may also show store number, but account number remains the key.
-- Legacy notes import as structured legacy notes.
-- Route day/order/nickname/frequency starts from legacy backup truth.
-- Voids live per SKU, per account, under the Details tab `Void Tracker`.
-- The correct void buckets are:
-  - Chain Mod Voids
-  - Scale Up
-  - Perfect Launch
-- The Today tab no longer has a duplicate `Voids & Opportunities` tracker.
-- Visited status is separate from task completion.
-- Notes support type, follow-up date, photo affordance, and voice-note affordance.
-- Pricing tracker is manual/flexible for now and can calculate margin from entered values.
-- Distro Drive seed data now imports only the `PAYTON STONE` sheet from the On-Prem Spring Distro workbook.
+- Moved service-worker registration into the network-loaded HTML shell so new offline versions reliably replace stale cached modules.
 
-## 2026-05-11 Data Refresh
+## 1.0.10 - 2026-07-30
 
-- Repointed seed generation to the local `Data\` folder.
-- Imported 26 On-Prem Distro Drive opportunities from `On-Prem Spring Distro Drive GI-Fairbury 5.7.26.xlsx`.
-- Imported 44 Elite Tasks from the weekly screenshot notes, including pricing surveys and targeted display tasks.
-- Bumped seed schema to `11` so the browser refreshes onto the new weekly data.
-- Kept Off-Prem distro items out of the seed because Off-Prem is 100% complete.
+- Kept the MTD/YTD control visible when a workbook lacks those periods, with disabled states and a clear source-data explanation.
 
-## Package 72 Account Task CTAs
+## 1.0.9 - 2026-07-29
 
-- Moved Distro Drive and Elite Tasks add forms below their existing item lists.
-- Added bottom CTA buttons: `Add new distro item` and `Add new Elite task`.
-- Forms stay hidden until opened, then close again after a successful add.
-- Sorted Distro Drive and Elite Tasks so open/to-do work stays above completed work.
+- Added a shared MTD/YTD selector wherever the imported report provides both periods.
+- Kept comparison-only reports in their truthful year-vs-year mode instead of relabeling them.
 
-## v1.0 Readiness Audit
+## 1.0.8 - 2026-07-29
 
-- Passed mobile render audit at `393 x 852` and desktop render audit at `1280 x 900`.
-- Verified Dashboard, Accounts, Account Today, Account Details, Account Notes, Activity, and More render without console errors or horizontal overflow.
-- Verified scoreboard stepping, account search, Distro add CTA, Elite Task add CTA, Details expansion, undo toast, and Dark Mode toggle.
-- Verified all cached service worker assets exist.
-- Verified runtime JavaScript and service worker syntax checks pass.
+- Fixed performance imports by mapping columns from their semantic headers instead of fixed positions.
+- Added explicit support for both MTD/YTD summaries and two-year Case Equiv comparison reports.
+- Labeled performance values with their actual period and comparison year across Home, Activity, and account details.
+- Unsupported performance layouts now fail clearly instead of producing misleading figures.
 
-## Current Screens
+## 1.0.7 - 2026-07-28
 
-### Dashboard
+- Moved the lower atmospheric fade from the inner sheet to the full screen so
+  content scrolls naturally beneath it and the bottom navigation remains above.
+- Tightened the account visit objective to the annotated 15px treatment.
+- Limited Route Health month choices to Alpenglow history from July 2026
+  forward, automatically adding each new month while retaining recorded data.
+- Added a validated roster-only export from the 46-account Route 508 v0.6
+  source, preserving permanent account numbers and per-day route order.
 
-- Hero: route/day, greeting, accounts-left message.
-- Day tabs.
-- Route Progress card.
-- Today at a Glance with Distro Drive strip and day signals.
-- Elite Scoreboard with Displays, PODs, Taps, Resets steppers.
-- Start Route CTA opens the current day route.
-- Dashboard is the visual design reference for future pages.
+## 1.0.6 - 2026-07-28
 
-### Accounts
+- Refined Home with full weekday names, clean circular route-health grades, a
+  finished bottom gradient, and route-level Segment Performance filters.
+- Added month switching to the Route Health calendar.
+- Rebuilt Activity around compact health-style counters, account-level
+  performance, account-specific end-of-day summaries, and a collapsed
+  today-only field timeline.
+- Simplified Settings and updated the app credit to Payton Stone.
+- Kept the offline shell while allowing new app versions to refresh cleanly.
 
-- Route-style account list.
-- Shows route order chip, account name/nickname, account number, chain store number when available, health score, Survey/OOC/Opps signals, visit action.
-- Filters: Today, All, Priority, Not Done, DSD, Chain, Independent, On-Prem.
-- Sort options include route order, account name, open opps, total opps, survey needed, OOC needed, type, last visit.
-- Search targets account name, nickname, account number, town-like text, type/tags, chain/store number.
-- Route order chip is black with white number/check and white outline.
+## 1.0.3 - 2026-07-28
 
-### Account Today
+- Added a dedicated inner sheet gutter so cards, lists, and full-width CTAs
+  retain visible space from the working page edges across every screen.
+- Kept headers, segmented controls, sheets, and bottom navigation at their
+  established widths.
 
-- Account hero contains identity, health score, and visit action.
-- Today Signals card.
-- Collapsed by default:
-  - Compliance Checklist
-  - Distro Drive
-  - Elite Tasks
-- Last Two Notes preview.
-- No void tracker here; all void work is centralized in Details.
+## 1.0.2 - 2026-07-28
 
-### Account Details
+- Made account number the permanent account identity for the explicit v0.6
+  roster import, preserving nicknames, weekday order, and twice-weekly stops.
+- Added item-number-ready SKU identity. Current July reports fall back to a
+  normalized product name because those exports do not contain item numbers.
+- Unified opportunity progress by account and SKU across Chain Mod, Scale Up,
+  and Perfect Launch while keeping report membership replace-only.
+- Migrated existing tracker-specific progress safely, preferring retained
+  `Sold In` state when old tracker states conflict.
+- Standardized the top inset of every working page and updated offline caching.
 
-- This Week's Objective.
-- Account Info, collapsed by default.
-- Pricing Tracker, collapsed by default.
-- Void Tracker, with Chain Mod Voids, Scale Up, and Perfect Launch.
-- Void row clicks retain scroll position.
+## 1.0.1 - 2026-07-28
 
-### Account Notes
+- Added a slightly wider shared content inset across all working cards.
+- Rebuilt Account Details as collapsed disclosure cards with useful summaries.
+- Added full stop editing from Route Editor, including frequency and route days,
+  without changing saved route order.
+- Added note deletion with Undo and delayed cleanup of unreferenced media.
+- Added in-app photo viewing, voice-note playback, media downloads, and a
+  reliable close control for every bottom sheet.
+- Added resilient iPhone-compatible voice capture with offline media storage.
+- Added segment performance as an explicit 25% health component. High End is
+  10% of that component; the other four segments split the remaining 90%.
+- Removed performance rows from opportunity counts.
 
-- Structured Note form.
-- Note Type: General, Opportunity, Issue, Follow Up, Order.
-- Follow-up date.
-- Photo and Voice Note affordances.
-- Notes Timeline collapsed by default.
+## 1.0.0 - 2026-07-27
 
-### Activity
-
-- End of Day Summary.
-- Weekly 1-on-1 Prep.
-- Summary Archive.
-- Activity Log.
-- Long Activity panels scroll internally.
-
-### More
-
-- Settings Defaults: Accent, Glass, Dark Mode.
-- Structured Notes shortcut.
-- Route Editor.
-- Legacy v0.6 Import.
-- Backups.
-- Long More panels scroll internally.
-
-## Visual System
-
-- Primary material: Liquid Glass-inspired app shell over background.
-- Parent shells/panels use frosted glass.
-- Action color: amber.
-- Main CTAs remain amber-filled.
-- True dark mode makes shells, cards, tabs, inputs, account rows, summaries, route editor rows, and bottom nav black/charcoal with white outlines and white text.
-- Dark mode keeps amber for primary actions and selected emphasis.
-- Avoid old chain/independent/on-premise color identity.
-- Avoid day-color system.
-- Avoid generic SaaS dashboard styling.
-
-## Package Timeline
-
-### Foundation
-
-- Package 1: imported seed/legacy data and generated first import report.
-- Package 2: created static PWA app frame, manifest, service worker, local store, core selectors, and seed data.
-- Package 3: added field-sales workflows: Dashboard, route accounts, account work, notes, summary.
-- Package 4: added media/backups affordances and IndexedDB media helper.
-- Package 5: added settings and route manager.
-- Package 6: added Activity weekly summary surfaces.
-- Package 7: visual/PWA QA pass.
-
-### Prototype Visual Migration
-
-- Package 8: dropdown/glass refresh.
-- Package 9: prototype vibe pass.
-- Package 10: Today at a Glance glass pass.
-- Package 11: hero health and route editor improvements.
-- Package 12: prototype cockpit pass.
-- Package 13: dashboard overflow audit.
-- Package 14: iOS edge fit.
-- Package 15: migrated to floating glass shell pattern.
-- Package 16: ported preview dashboard.
-- Package 17: annotated dashboard fit.
-- Package 18: dashboard micro-polish.
-- Package 19: final dashboard calibration.
-- Package 20: alpenglow photo crop.
-- Package 21: clearer dashboard base.
-- Package 22: clearer shell and insight tile alignment.
-- Package 23: Distro Drive strip and scoreboard panel.
-- Package 24: Elite Scoreboard glass panel.
-- Package 25: centered section titles and Route Progress alignment.
-- Package 27: title-case labels and spacing polish.
-- Package 28: universal type and spacing rhythm.
-- Package 29: matched Today at a Glance and Elite Scoreboard padding.
-- Package 30: universal tab title heights.
-- Package 33: locked Dashboard labels: Day Health, score, no repeated Scoreboard subtitles.
-
-### Background And Glass Calibration
-
-- Package 37: short Safari-like viewport bottom alignment.
-- Package 38: switched to `assets/alpenglow-mountain.png`.
-- Package 39: softened side shadow and shell blur.
-- Package 41: shell set near 90% transparent.
-- Package 42: milkier card glass with grain texture.
-- Package 43: denser frosted cards.
-- Package 44: iOS pull-tab shelf.
-- Package 45: fixed pull-tab shelf inheritance.
-- Package 46: increased blur and fixed desktop background crop.
-- Package 47: clearer fill with more optical distortion.
-- Package 48: high blur / low fill Liquid Glass experiment.
-- Package 49: switched to abstract alpenglow background.
-- Package 50: added reusable dark Liquid Glass tokens.
-- Package 51: removed green glaze and added neutral duplicated-background blur plate.
-- Package 53: switched to `assets/508BG.png` and neutral frost noise.
-- Package 54: increased white-frost blur and contrast.
-- Package 55: switched to `assets/dark-liquid-bg.jpg`; verified Dashboard fit and favicon.
-
-### Accounts And Account Pages
-
-- Package 56: rebuilt Accounts screen from Dashboard visual system.
-- Package 57: replaced New filter with Not Done and restored compact sort.
-- Package 58: removed unused grid button and tightened search.
-- Package 59: replaced Tags stats with Survey/OOC/Opps, added related sort options.
-- Package 60: rebuilt tapped Account page with Today/Details/Notes tabs.
-- Package 61: removed Account Brief, moved visit action into hero, converted work cards to glass wrappers.
-- Package 62: made Compliance, Distro, Elite, and old Voids preview collapsible; fixed row containment.
-- Package 63: restored Dashboard Start Route CTA and standardized Details/Notes wrappers.
-- Package 64: preserved Account Details scroll after void changes; compacted Notes; moved Activity/More to the same shell system.
-- Package 65: self-audit cleanup, safer account search refresh, no full rerender on native form/select changes, larger scoreboard steppers.
-
-### Final Utility, Theme, And Safety Passes
-
-- Package 66: fixed Activity/More expanded-card scrolling, added utility scroll memory, repaired Accent/Dark Mode readability.
-- Package 67: converted Dark Mode into true black/white-outline dark mode.
-- Package 68: extended true dark mode to Dashboard Route Progress and removed duplicate Today-tab void preview.
-- Package 69: made Accounts route-order chip white-on-black and verified void tracker centralization.
-- Package 70: added global Undo toast for meaningful mutations.
-- Cleanup: compressed docs into this changelog and archived historical docs, QA screenshots, and old CSS backup files.
-
-## Verification Snapshot
-
-Current passing checks:
-
-- `node --check js/app.js`
-- `node --check js/core/store.js`
-- `node --check sw.js`
-- Render checks at `393 x 852` CSS pixels.
-- Dashboard, Accounts, Account Today, Account Details, Account Notes, Activity, and More have no horizontal overflow in the latest checks.
-- Undo toast verified:
-  - Scoreboard `+` shows `Scoreboard changed` and Undo restores count.
-  - Dark Mode toggle shows `Settings changed` and Undo restores light mode.
-
-## Known Risks / Next Work
-
-- CSS is still layered from many visual packages; preserve the look, but consolidate the cascade before production transfer.
-- Excel import/data refresh is not yet a polished in-app workflow.
-- Health grades are simplistic.
-- Skipped accounts and true week-over-week score deltas are not fully tracked.
-- Future production transfer should keep the Dashboard visual as the reference and avoid broad CSS selectors.
-
-## Data Drop Location
-
-Put new weekly Excel files here:
-
-`C:\Users\xyzas\Documents\Codex\2026-05-03\files-mentioned-by-the-user-route\Alpenglow v0.10\Data`
-
-Preferred: upload/place the raw `.xlsx` files unchanged, keeping original filenames.
+- Rebuilt Alpenglow as a clean-install, offline-first iPhone PWA.
+- Added weekday routes, Focus mode, visit tracking, account details, structured
+  notes, photo and voice attachments, follow-ups, compliance, price books, and
+  user-owned opportunity states.
+- Added explainable account and route health, historical health snapshots, and
+  the Route Health Map with distinct no-data and F-grade states.
+- Added strict Excel parsing for performance, Chain Void, ScaleUp, and Perfect
+  Launch reports with a Review queue for every uncertain match.
+- Physically separated field records from replace-only report imports and added
+  automated tests that reject import-side field mutations.
+- Added JSON and full ZIP backups, route editing, optional sample data, dusk
+  mode, safe-area support, service-worker caching, and offline status.
+- Verified the primary and secondary workflows at 393 by 852 pixels with
+  44-pixel minimum controls, no horizontal overflow, and offline boot.

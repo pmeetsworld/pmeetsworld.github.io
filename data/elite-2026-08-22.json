@@ -1,0 +1,394 @@
+{
+  "type": "eliteAssignments",
+  "period": "August 2026",
+  "sourceDate": "2026-08-22",
+  "capture": {
+    "source": "Elite Tasks screenshot",
+    "hideCompleted": true,
+    "openTaskCount": 106,
+    "progress": {
+      "newDistribution": { "completed": 13, "assigned": 80 },
+      "targetedDisplays": { "completed": 2, "assigned": 38 }
+    },
+    "note": "The screenshot hides completed rows. Stable assignments from the prior full August capture are retained; no hidden account assignment was guessed. The PFP snapshot is authoritative for validated campaign totals."
+  },
+  "assignments": [
+    {
+      "sourceId": "followup:hanks-ghost-cooler",
+      "sourceName": "HANKS GAS & GROCERY - GI",
+      "title": "Sell in ghost cooler",
+      "details": "Sell in slim ghost cooler",
+      "category": "Account Followups",
+      "sourceStatus": "To Do",
+      "dueLabel": "Overdue"
+    },
+    {
+      "sourceId": "followup:plum-good2grow",
+      "sourceName": "PLUM CREEK MARKET PLACE - GI",
+      "title": "Good2grow cyclone rack",
+      "details": "Sell in good2grow rack",
+      "category": "Account Followups",
+      "sourceStatus": "Rejected",
+      "dueLabel": "Overdue"
+    },
+    {
+      "sourceId": "followup:fill3-price-signs",
+      "sourceName": "FILL N CHILL - LEXINGTON - #3 - GI",
+      "title": "Price Signs",
+      "details": "Get price signs",
+      "category": "Account Followups",
+      "sourceStatus": "To Do",
+      "dueLabel": "Overdue"
+    },
+    {
+      "sourceId": "survey:little-usa-0514",
+      "sourceName": "LITTLE USA - GI",
+      "title": "Constellation Price Survey 2026/05/07-2026/05/14",
+      "category": "Pricing Surveys",
+      "sourceStatus": "To Do",
+      "dueLabel": "Overdue"
+    },
+    {
+      "sourceId": "survey:little-usa-0529",
+      "sourceName": "LITTLE USA - GI",
+      "title": "Constellation Price Survey 2026/05/07-2026/05/18-2026/05/29",
+      "category": "Pricing Surveys",
+      "sourceStatus": "To Do",
+      "dueLabel": "Overdue"
+    },
+    {
+      "sourceId": "survey:thriftys-0529",
+      "sourceName": "THRIFTY'S GAS & LIQUOR - GI",
+      "title": "Constellation Price Survey 2026/05/07-2026/05/18-2026/05/29",
+      "category": "Pricing Surveys",
+      "sourceStatus": "To Do",
+      "dueLabel": "Overdue"
+    }
+  ],
+  "groups": [
+    {
+      "id": "newdist:glacial-till-caramel-preorder",
+      "title": "Glacial Till Caramel Apple Pre Order",
+      "category": "New Distribution",
+      "campaign": "Glacial Till Caramel Apple Pre Order",
+      "sourceStatus": "To Do",
+      "dueDate": "2026-08-27",
+      "accounts": [
+        "THE GREENS AT PRAIRIE HILLS GOLF CLUB - GI",
+        "OVERTON GOLF CLUB - GI",
+        "THREE 21 TAVERN, LLC - GI",
+        "TOM'S MIDWEST LIQUORS - GI",
+        "MAC'S SHORT STOP - GI",
+        "FAT DOG'S - LEXINGTON - GI",
+        "THE DOME LOUNGE - GI",
+        "RAVENNA GOLF CLUB - GI",
+        "THRIFTY'S GAS & LIQUOR - GI",
+        "MNO HOMETOWN MARKET-RAVENNA - GI",
+        "LITTLE USA - GI",
+        "CENTURA HILLS GOLF CLUB - GI"
+      ]
+    },
+    {
+      "id": "newdist:beatbox-fruitpunch-11271",
+      "title": "Sell in Beatbox Fruitpunch 11271",
+      "category": "New Distribution",
+      "campaign": "Beatbox Distribution",
+      "sourceStatus": "To Do",
+      "dueDate": "2026-08-31",
+      "accounts": [
+        "FILL N CHILL - RAVENNA - #4 - GI",
+        "FILL N CHILL - LEXINGTON - #3 - GI",
+        "FOSTER'S FAMILY FOOD - GI",
+        "MNO HOMETOWN MARKET-RAVENNA - GI",
+        "PLUM CREEK MARKET PLACE - GI",
+        "THRIFTY'S GAS & LIQUOR - GI"
+      ]
+    },
+    {
+      "id": "newdist:cornhusker-crusher",
+      "title": "Cornhusker Crusher Cans Distribution",
+      "category": "New Distribution",
+      "campaign": "Cornhusker Crusher Cans Distribution - August PFP",
+      "sourceStatus": "To Do",
+      "dueDate": "2026-08-31",
+      "accounts": [
+        "RIVER STOP - GI",
+        "PLUM CREEK MARKET PLACE - GI",
+        "LITTLE USA - GI",
+        "MAC'S SHORT STOP - GI",
+        "FOSTER'S FAMILY FOOD - GI",
+        "THRIFTY'S GAS & LIQUOR - GI",
+        "TOM'S MIDWEST LIQUORS - GI",
+        "MNO HOMETOWN MARKET-RAVENNA - GI"
+      ]
+    },
+    {
+      "id": "newdist:cutwater-vodka-mule",
+      "title": "Cutwater Scale Up - Vodka Mule - Aug PFP",
+      "category": "New Distribution",
+      "campaign": "Cutwater Scale Up - Aug PFP",
+      "sourceStatus": "To Do",
+      "dueDate": "2026-08-31",
+      "accounts": [
+        "HANKS GAS & GROCERY - GI",
+        "FOSTER'S FAMILY FOOD - GI",
+        "TOM'S MIDWEST LIQUORS - GI",
+        "PLUM CREEK MARKET PLACE - GI",
+        "MAC'S SHORT STOP - GI"
+      ]
+    },
+    {
+      "id": "newdist:cutwater-white-russian",
+      "title": "Cutwater Scale Up - White Russian - Aug PFP",
+      "category": "New Distribution",
+      "campaign": "Cutwater Scale Up - Aug PFP",
+      "sourceStatus": "To Do",
+      "dueDate": "2026-08-31",
+      "accounts": [
+        "PLUM CREEK MARKET PLACE - GI",
+        "NEBRASKALAND TRUCK CENTER - GI",
+        "FOSTER'S FAMILY FOOD - GI"
+      ]
+    },
+    {
+      "id": "newdist:cutwater-margarita-variety",
+      "title": "Cutwater Scale Up - Margarita Variety Pack - Aug PFP",
+      "category": "New Distribution",
+      "campaign": "Cutwater Scale Up - Aug PFP",
+      "sourceStatus": "To Do",
+      "dueDate": "2026-08-31",
+      "accounts": [
+        "FOSTER'S FAMILY FOOD - GI",
+        "HANKS GAS & GROCERY - GI",
+        "MAC'S SHORT STOP - GI",
+        "PLUM CREEK MARKET PLACE - GI",
+        "LITTLE USA - GI",
+        "MNO HOMETOWN MARKET-RAVENNA - GI"
+      ]
+    },
+    {
+      "id": "newdist:cutwater-lime-margarita",
+      "title": "Cutwater Scale Up - Lime Margarita - Aug PFP",
+      "category": "New Distribution",
+      "campaign": "Cutwater Scale Up - Aug PFP",
+      "sourceStatus": "To Do",
+      "dueDate": "2026-08-31",
+      "accounts": [
+        "FOSTER'S FAMILY FOOD - GI",
+        "PLUM CREEK MARKET PLACE - GI"
+      ]
+    },
+    {
+      "id": "newdist:cutwater-lemon-drop",
+      "title": "Cutwater Scale Up - Lemon Drop - Aug PFP",
+      "category": "New Distribution",
+      "campaign": "Cutwater Scale Up - Aug PFP",
+      "sourceStatus": "To Do",
+      "dueDate": "2026-08-31",
+      "accounts": [
+        "MAC'S SHORT STOP - GI",
+        "PLUM CREEK MARKET PLACE - GI",
+        "FOSTER'S FAMILY FOOD - GI",
+        "LITTLE USA - GI"
+      ]
+    },
+    {
+      "id": "newdist:beatbox-cherry-lime-11270",
+      "title": "Sell in Beatbox Cherry Lime 11270",
+      "category": "New Distribution",
+      "campaign": "Beatbox Distribution",
+      "sourceStatus": "To Do",
+      "dueDate": "2026-08-31",
+      "accounts": [
+        "FILL N CHILL - RAVENNA - #4 - GI",
+        "FILL N CHILL - LEXINGTON - #3 - GI",
+        "FOSTER'S FAMILY FOOD - GI",
+        "MNO HOMETOWN MARKET-RAVENNA - GI",
+        "MAC'S SHORT STOP - GI",
+        "THRIFTY'S GAS & LIQUOR - GI",
+        "PLUM CREEK MARKET PLACE - GI"
+      ]
+    },
+    {
+      "id": "newdist:beatbox-blue-razz-11268",
+      "title": "Sell in Beatbox Blue Razz 11268",
+      "category": "New Distribution",
+      "campaign": "Beatbox Distribution",
+      "sourceStatus": "To Do",
+      "dueDate": "2026-08-31",
+      "accounts": [
+        "THRIFTY'S GAS & LIQUOR - GI",
+        "MNO HOMETOWN MARKET-RAVENNA - GI",
+        "PLUM CREEK MARKET PLACE - GI",
+        "FILL N CHILL - RAVENNA - #4 - GI",
+        "FILL N CHILL - LEXINGTON - #3 - GI",
+        "FOSTER'S FAMILY FOOD - GI"
+      ]
+    },
+    {
+      "id": "newdist:beatbox-pink-lemonade-11275",
+      "title": "Sell in Beatbox Pink Lemonade 11275",
+      "category": "New Distribution",
+      "campaign": "Beatbox Distribution",
+      "sourceStatus": "To Do",
+      "dueDate": "2026-08-31",
+      "accounts": [
+        "MNO HOMETOWN MARKET-RAVENNA - GI",
+        "THRIFTY'S GAS & LIQUOR - GI",
+        "FOSTER'S FAMILY FOOD - GI",
+        "FILL N CHILL - LEXINGTON - #3 - GI",
+        "PLUM CREEK MARKET PLACE - GI",
+        "FILL N CHILL - RAVENNA - #4 - GI",
+        "MAC'S SHORT STOP - GI"
+      ]
+    },
+    {
+      "id": "newdist:ultra-18-bottle",
+      "title": "Ultra 18 Pk Bottle Distribution",
+      "category": "New Distribution",
+      "campaign": "Ultra Distribution Scale Up - Aug PFP",
+      "sourceStatus": "To Do",
+      "dueDate": "2026-08-31",
+      "accounts": [
+        "PLUM CREEK MARKET PLACE - GI",
+        "FOSTER'S FAMILY FOOD - GI",
+        "MNO HOMETOWN MARKET-RAVENNA - GI",
+        "MAC'S SHORT STOP - GI",
+        "LITTLE USA - GI",
+        "TOM'S MIDWEST LIQUORS - GI"
+      ]
+    },
+    {
+      "id": "newdist:ultra-24-bottle",
+      "title": "Ultra 24 Pk Btls Distribution",
+      "category": "New Distribution",
+      "campaign": "Ultra Distribution Scale Up - Aug PFP",
+      "sourceStatus": "To Do",
+      "dueDate": "2026-08-31",
+      "accounts": [
+        "LITTLE USA - GI",
+        "MAC'S SHORT STOP - GI",
+        "PLUM CREEK MARKET PLACE - GI",
+        "MNO HOMETOWN MARKET-RAVENNA - GI",
+        "FOSTER'S FAMILY FOOD - GI",
+        "TOM'S MIDWEST LIQUORS - GI"
+      ]
+    },
+    {
+      "id": "newdist:ultra-18-can",
+      "title": "Ultra 18 Pk Can Distribution",
+      "category": "New Distribution",
+      "campaign": "Ultra Distribution Scale Up - Aug PFP",
+      "sourceStatus": "To Do",
+      "dueDate": "2026-08-31",
+      "accounts": ["FOSTER'S FAMILY FOOD - GI"]
+    },
+    {
+      "id": "display:mainstream-ultra-pricing",
+      "title": "Mainstream + Ultra 2 for Pricing",
+      "category": "Targeted Displays",
+      "campaign": "Ultra + Mainstream 2-for-Pricing",
+      "sourceStatus": "To Do",
+      "dueDate": "2026-08-30",
+      "accounts": [
+        "FOSTER'S FAMILY FOOD - GI",
+        "OVERTON 1 STOP - GI",
+        "PRONTO - KEARNEY - GI",
+        "PLUM CREEK MARKET PLACE - GI",
+        "FAT DOG'S - LEXINGTON - GI",
+        "RIVER STOP - GI",
+        "FARMERS COOP - RAVENNA - GI",
+        "TOM'S MIDWEST LIQUORS - GI",
+        "MNO HOMETOWN MARKET-RAVENNA - GI",
+        "MAC'S SHORT STOP - GI",
+        "LITTLE USA - GI",
+        "HANKS GAS & GROCERY - GI",
+        "THRIFTY'S GAS & LIQUOR - GI",
+        "NEBRASKALAND TRUCK CENTER - GI"
+      ]
+    },
+    {
+      "id": "display:beyond-constellation-pricing",
+      "title": "Constellation + Beyond Beer 2 For Pricing",
+      "category": "Targeted Displays",
+      "campaign": "Beyond Beer + Constellation 2-for-Pricing",
+      "sourceStatus": "To Do",
+      "dueDate": "2026-08-30",
+      "accounts": [
+        "PLUM CREEK MARKET PLACE - GI",
+        "NEBRASKALAND TRUCK CENTER - GI",
+        "FAT DOG'S - LEXINGTON - GI",
+        "HANKS GAS & GROCERY - GI",
+        "MAC'S SHORT STOP - GI",
+        "LITTLE USA - GI",
+        "THRIFTY'S GAS & LIQUOR - GI",
+        "TOM'S MIDWEST LIQUORS - GI",
+        "PRONTO - KEARNEY - GI"
+      ]
+    },
+    {
+      "id": "display:constellation-football",
+      "title": "Constellation Football Displays - Aug PFP",
+      "category": "Targeted Displays",
+      "campaign": "Constellation Football Displays - Aug PFP",
+      "sourceStatus": "To Do",
+      "dueDate": "2026-08-31",
+      "accounts": [
+        "THRIFTY'S GAS & LIQUOR - GI",
+        "PRONTO - KEARNEY - GI",
+        "WALMART - LEXINGTON - #637 - GI",
+        "PLUM CREEK MARKET PLACE - GI",
+        "MAC'S SHORT STOP - GI",
+        "PUMP & PANTRY - CAIRO - #4 - GI"
+      ]
+    },
+    {
+      "id": "display:bud-family-football",
+      "title": "Bud Family Labor Day/Husker Football Displays - Aug PFP",
+      "category": "Targeted Displays",
+      "campaign": "Bud Family Labor Day/Husker Football Displays - Aug PFP",
+      "sourceStatus": "To Do",
+      "dueDate": "2026-08-31",
+      "accounts": [
+        "MAC'S SHORT STOP - GI",
+        "WALMART - LEXINGTON - #637 - GI",
+        "PLUM CREEK MARKET PLACE - GI",
+        "THRIFTY'S GAS & LIQUOR - GI"
+      ]
+    },
+    {
+      "id": "display:stella-artois",
+      "title": "Stella Artois Displays - Aug PFP",
+      "category": "Targeted Displays",
+      "campaign": "Stella Artois Displays - Aug PFP",
+      "sourceStatus": "To Do",
+      "dueDate": "2026-08-31",
+      "accounts": ["THRIFTY'S GAS & LIQUOR - GI"]
+    },
+    {
+      "id": "display:kona",
+      "title": "Kona Displays - Aug PFP",
+      "category": "Targeted Displays",
+      "campaign": "Kona Displays - Aug PFP",
+      "sourceStatus": "To Do",
+      "dueDate": "2026-08-31",
+      "accounts": ["THRIFTY'S GAS & LIQUOR - GI"]
+    },
+    {
+      "id": "display:cutwater-rack-caseys2038",
+      "title": "Place Cutwater Rack in Beer Cave",
+      "category": "Targeted Displays",
+      "sourceStatus": "To Do",
+      "dueLabel": "Overdue",
+      "accounts": ["CASEY'S - KEARNEY - #2038 - GI"]
+    },
+    {
+      "id": "display:sparkling-ice-walmart637",
+      "title": "Acquire a Sparkling Ice Large display",
+      "category": "Targeted Displays",
+      "sourceStatus": "To Do",
+      "dueDate": "2026-08-27",
+      "accounts": ["WALMART - LEXINGTON - #637 - GI"]
+    }
+  ]
+}

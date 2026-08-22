@@ -1,0 +1,34 @@
+{
+  "type": "pfpScorecard",
+  "period": "August 2026",
+  "sourceDate": "2026-08-22",
+  "sourceStatus": "Open - projection, not pay",
+  "buckets": [
+    { "id": "premium", "goal": 7925.88, "actual": 4448.85 },
+    { "id": "hard-beverage", "goal": 1633.22, "actual": 824.55 },
+    { "id": "gross-profit", "goal": 135582.21, "actual": 77724.75 },
+    { "id": "mainstream", "goal": 8007.7, "actual": 4478.07 },
+    { "id": "non-alcohol", "goal": 7001.25, "actual": 6105.97 },
+    { "id": "high-end", "goal": 135.87, "actual": 108.84 }
+  ],
+  "execution": {
+    "completed": 5,
+    "assigned": 78,
+    "distributionCompleted": 3,
+    "distributionAssigned": 41,
+    "displayCompleted": 2,
+    "displayAssigned": 37
+  },
+  "campaigns": [
+    { "name": "Place Cutwater Rack - July PFP", "type": "Targeted display", "completed": 2, "assigned": 2, "target": 0 },
+    { "name": "Cutwater Scale Up - Aug PFP", "type": "New distribution", "completed": 0, "assigned": 20, "target": 370 },
+    { "name": "Ultra Distribution Scale Up - Aug PFP", "type": "New distribution", "completed": 2, "assigned": 13, "target": 335 },
+    { "name": "Ultra + Mainstream 2-for-Pricing", "type": "Targeted display", "completed": 0, "assigned": 14, "target": 188 },
+    { "name": "Constellation Football Displays - Aug PFP", "type": "Targeted display", "completed": 0, "assigned": 6, "target": 141 },
+    { "name": "Beyond Beer + Constellation 2-for-Pricing", "type": "Targeted display", "completed": 0, "assigned": 9, "target": 122 },
+    { "name": "Cornhusker Crusher Cans Distribution - August PFP", "type": "New distribution", "completed": 1, "assigned": 8, "target": 118 },
+    { "name": "Bud Family Labor Day/Husker Football Displays - Aug PFP", "type": "Targeted display", "completed": 0, "assigned": 4, "target": 81 },
+    { "name": "Stella Artois Displays - Aug PFP", "type": "Targeted display", "completed": 0, "assigned": 1, "target": 29 },
+    { "name": "Kona Displays - Aug PFP", "type": "Targeted display", "completed": 0, "assigned": 1, "target": 29 }
+  ]
+}
